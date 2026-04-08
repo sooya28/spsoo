@@ -15,7 +15,8 @@ class WeatherCard extends HTMLElement {
                     display: block;
                 }
                 .weather-card {
-                    background-color: var(--card-color, #1E1E1E);
+                    background-color: var(--card-bg, rgba(30, 30, 30, 0.7));
+                    backdrop-filter: blur(10px);
                     padding: 2rem;
                     border-radius: 15px;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 10px rgba(187, 134, 252, 0.2);
@@ -83,6 +84,8 @@ const citySelect = document.getElementById('city-select');
 const detailsButton = document.getElementById('details-button');
 const lastUpdated = document.getElementById('last-updated');
 const weatherCard = document.querySelector('weather-card');
+const themeToggle = document.getElementById('theme-toggle');
+const body = document.body;
 
 async function fetchWeatherData(city) {
     try {
@@ -98,12 +101,50 @@ async function fetchWeatherData(city) {
     }
 }
 
+const weatherBackgrounds = {
+    'Sunny': 'https://images.unsplash.com/photo-1506466010722-395aa2bef877?auto=format&fit=crop&w=1920&q=80',
+    'Clear': 'https://images.unsplash.com/photo-1510562339992-1237e1e47962?auto=format&fit=crop&w=1920&q=80',
+    'Partly cloudy': 'https://images.unsplash.com/photo-1595841055318-50269399436d?auto=format&fit=crop&w=1920&q=80',
+    'Cloudy': 'https://images.unsplash.com/photo-1534088568595-a066f710b721?auto=format&fit=crop&w=1920&q=80',
+    'Overcast': 'https://images.unsplash.com/photo-1483977399921-6cf94f6fdc3a?auto=format&fit=crop&w=1920&q=80',
+    'Rain': 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?auto=format&fit=crop&w=1920&q=80',
+    'Snow': 'https://images.unsplash.com/photo-1491002052546-bf38f186af56?auto=format&fit=crop&w=1920&q=80',
+    'Mist': 'https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?auto=format&fit=crop&w=1920&q=80',
+    'Fog': 'https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?auto=format&fit=crop&w=1920&q=80',
+    'Thundery outbreaks possible': 'https://images.unsplash.com/photo-1605727285072-4a5ef26191ec?auto=format&fit=crop&w=1920&q=80'
+};
+
+function updateBackground(condition) {
+    let bgUrl = '';
+    const desc = condition.toLowerCase();
+    
+    if (desc.includes('sun') || desc.includes('clear')) bgUrl = weatherBackgrounds['Sunny'];
+    else if (desc.includes('cloudy') || desc.includes('overcast')) bgUrl = weatherBackgrounds['Cloudy'];
+    else if (desc.includes('rain') || desc.includes('drizzle')) bgUrl = weatherBackgrounds['Rain'];
+    else if (desc.includes('snow') || desc.includes('blizzard')) bgUrl = weatherBackgrounds['Snow'];
+    else if (desc.includes('fog') || desc.includes('mist')) bgUrl = weatherBackgrounds['Fog'];
+    else if (desc.includes('thunder')) bgUrl = weatherBackgrounds['Thundery outbreaks possible'];
+    else bgUrl = weatherBackgrounds['Overcast'];
+
+    document.body.style.backgroundImage = `url('${bgUrl}')`;
+}
+
 async function updateWeather() {
     const selectedCity = citySelect.value;
     const data = await fetchWeatherData(selectedCity);
     if (data) {
+        const weather = data.current_condition[0];
         weatherCard.updateContent(data);
+        updateBackground(weather.weatherDesc[0].value);
         lastUpdated.textContent = `정보 업데이트: ${new Date().toLocaleString()}`;
+    }
+}
+
+function setTheme(theme) {
+    if (theme === 'light') {
+        body.classList.add('light-mode');
+    } else {
+        body.classList.remove('light-mode');
     }
 }
 
@@ -112,6 +153,21 @@ citySelect.addEventListener('change', updateWeather);
 detailsButton.addEventListener('click', () => {
     const selectedCity = citySelect.value;
     window.open(`https://wttr.in/${selectedCity}`, '_blank');
+});
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme) {
+    setTheme(savedTheme);
+}
+
+themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('light-mode')) {
+        setTheme('dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        setTheme('light');
+        localStorage.setItem('theme', 'light');
+    }
 });
 
 // Initial weather update for the default city

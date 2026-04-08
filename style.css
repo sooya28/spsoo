@@ -1,6 +1,16 @@
+body.light-mode {
+    --background-color: #F0F0F0;
+    --card-color: #FFFFFF;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --text-color: #333333;
+    --primary-color: #007BFF;
+    --secondary-color: #0056b3;
+}
+
 :root {
     --background-color: #121212;
     --card-color: #1E1E1E;
+    --card-bg: rgba(30, 30, 30, 0.7);
     --text-color: #E0E0E0;
     --primary-color: #BB86FC;
     --secondary-color: #03DAC6;
@@ -16,8 +26,27 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    transition: background-image 0.8s ease-in-out;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+}
+
+body.light-mode::before {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .container {
@@ -46,7 +75,7 @@ header p {
     justify-content: center;
 }
 
-#city-select, #details-button {
+#city-select, #details-button, #theme-toggle {
     font-size: 1rem;
     padding: 0.75rem 1.5rem;
     border-radius: 25px;
@@ -56,19 +85,21 @@ header p {
 }
 
 #city-select {
-    background-color: var(--card-color);
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
     color: var(--text-color);
     border: 2px solid var(--primary-color);
 }
 
-#details-button {
+#details-button, #theme-toggle {
     background-color: var(--primary-color);
     color: var(--background-color);
     font-weight: bold;
     box-shadow: 0 0 10px rgba(187, 134, 252, 0.4), 0 0 20px rgba(187, 134, 252, 0.3);
+    backdrop-filter: blur(5px);
 }
 
-#details-button:hover {
+#details-button:hover, #theme-toggle:hover {
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(187, 134, 252, 0.6);
 }
