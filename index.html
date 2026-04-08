@@ -26,7 +26,18 @@
                 </select>
                 <button id="details-button">오늘의 상세날씨</button>
             </div>
-            <weather-card></weather-card>
+            
+            <section class="info-section">
+                <h2>실시간 날씨 정보</h2>
+                <p class="update-time" id="weather-updated">정보 업데이트: -</p>
+                <weather-card></weather-card>
+            </section>
+
+            <section class="info-section">
+                <h2>실시간 환율 정보 (KRW 기준)</h2>
+                <p class="update-time" id="exchange-updated">정보 업데이트: -</p>
+                <exchange-card></exchange-card>
+            </section>
         </main>
     </div>
     <script type="module" src="main.js"></script>

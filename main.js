@@ -13,28 +13,29 @@ class WeatherCard extends HTMLElement {
             <style>
                 :host {
                     display: block;
+                    margin-bottom: 1rem;
                 }
                 .weather-card {
                     background-color: var(--card-bg, rgba(30, 30, 30, 0.7));
                     backdrop-filter: blur(10px);
-                    padding: 2rem;
+                    padding: 1.5rem;
                     border-radius: 15px;
                     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 10px rgba(187, 134, 252, 0.2);
                     border: 1px solid var(--primary-color, #BB86FC);
                 }
                 .weather-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                    gap: 1.5rem;
+                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    gap: 1rem;
                     text-align: left;
                 }
                 .weather-item h3 {
-                    font-size: 1.2rem;
+                    font-size: 1rem;
                     color: var(--secondary-color, #03DAC6);
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.3rem;
                 }
                 .weather-item p {
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                     margin: 0;
                 }
             </style>
@@ -78,12 +79,89 @@ class WeatherCard extends HTMLElement {
     }
 }
 
+class ExchangeCard extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+    render() {
+        this.shadowRoot.innerHTML = `
+            <style>
+                :host {
+                    display: block;
+                }
+                .exchange-card {
+                    background-color: var(--card-bg, rgba(30, 30, 30, 0.7));
+                    backdrop-filter: blur(10px);
+                    padding: 1.5rem;
+                    border-radius: 15px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 10px rgba(187, 134, 252, 0.2);
+                    border: 1px solid var(--primary-color, #BB86FC);
+                }
+                .exchange-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    gap: 1.5rem;
+                    text-align: left;
+                }
+                .exchange-item h3 {
+                    font-size: 1rem;
+                    color: var(--secondary-color, #03DAC6);
+                    margin-bottom: 0.3rem;
+                }
+                .exchange-item p {
+                    font-size: 1.5rem;
+                    margin: 0;
+                    font-weight: bold;
+                }
+                .unit {
+                    font-size: 0.9rem;
+                    color: var(--text-color);
+                    margin-left: 0.3rem;
+                }
+            </style>
+            <div class="exchange-card">
+                <div class="exchange-grid" id="exchange-data">
+                    <div class="exchange-item">
+                        <h3>미국 달러 (USD)</h3>
+                        <p><span id="usd-rate">-</span><span class="unit">KRW</span></p>
+                    </div>
+                    <div class="exchange-item">
+                        <h3>일본 엔 (JPY 100)</h3>
+                        <p><span id="jpy-rate">-</span><span class="unit">KRW</span></p>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    updateContent(rates) {
+        if (!rates) return;
+        const exchangeDataContainer = this.shadowRoot.getElementById('exchange-data');
+        
+        // KRW is base, so 1/USD rate gives USD price in KRW
+        const usdToKrw = (1 / rates.USD).toFixed(2);
+        const jpyToKrw = (100 / rates.JPY).toFixed(2);
+        
+        exchangeDataContainer.querySelector('#usd-rate').textContent = usdToKrw;
+        exchangeDataContainer.querySelector('#jpy-rate').textContent = jpyToKrw;
+    }
+}
+
 customElements.define('weather-card', WeatherCard);
+customElements.define('exchange-card', ExchangeCard);
 
 const citySelect = document.getElementById('city-select');
 const detailsButton = document.getElementById('details-button');
-const lastUpdated = document.getElementById('last-updated');
+const weatherUpdated = document.getElementById('weather-updated');
+const exchangeUpdated = document.getElementById('exchange-updated');
 const weatherCard = document.querySelector('weather-card');
+const exchangeCard = document.querySelector('exchange-card');
 const themeToggle = document.getElementById('theme-toggle');
 const body = document.body;
 
@@ -97,6 +175,21 @@ async function fetchWeatherData(city) {
         return data;
     } catch (error) {
         console.error('Error fetching weather data:', error);
+        return null;
+    }
+}
+
+async function fetchExchangeRates() {
+    try {
+        // Using open.er-api.com for free exchange rates (base KRW)
+        const response = await fetch('https://open.er-api.com/v6/latest/KRW');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching exchange rates:', error);
         return null;
     }
 }
@@ -136,7 +229,15 @@ async function updateWeather() {
         const weather = data.current_condition[0];
         weatherCard.updateContent(data);
         updateBackground(weather.weatherDesc[0].value);
-        lastUpdated.textContent = `정보 업데이트: ${new Date().toLocaleString()}`;
+        weatherUpdated.textContent = `정보 업데이트: ${new Date().toLocaleString()}`;
+    }
+}
+
+async function updateExchangeRates() {
+    const data = await fetchExchangeRates();
+    if (data && data.rates) {
+        exchangeCard.updateContent(data.rates);
+        exchangeUpdated.textContent = `정보 업데이트: ${new Date().toLocaleString()}`;
     }
 }
 
@@ -170,5 +271,6 @@ themeToggle.addEventListener('click', () => {
     }
 });
 
-// Initial weather update for the default city
+// Initial updates
 updateWeather();
+updateExchangeRates();
