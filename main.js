@@ -162,8 +162,6 @@ const weatherUpdated = document.getElementById('weather-updated');
 const exchangeUpdated = document.getElementById('exchange-updated');
 const weatherCard = document.querySelector('weather-card');
 const exchangeCard = document.querySelector('exchange-card');
-const themeToggle = document.getElementById('theme-toggle');
-const body = document.body;
 
 async function fetchWeatherData(city) {
     try {
@@ -224,12 +222,25 @@ function updateBackground(condition) {
 
 async function updateWeather() {
     const selectedCity = citySelect.value;
+    weatherUpdated.textContent = '정보를 가져오는 중...';
     const data = await fetchWeatherData(selectedCity);
     if (data) {
         const weather = data.current_condition[0];
         weatherCard.updateContent(data);
         updateBackground(weather.weatherDesc[0].value);
-        weatherUpdated.textContent = `정보 업데이트: ${new Date().toLocaleString()}`;
+        const now = new Date();
+        const timeString = now.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
+        weatherUpdated.textContent = `제공 일시: ${timeString}`;
+    } else {
+        weatherUpdated.textContent = '날씨 정보를 가져오는 데 실패했습니다. 잠시 후 다시 시도해 주세요.';
     }
 }
 
@@ -241,34 +252,11 @@ async function updateExchangeRates() {
     }
 }
 
-function setTheme(theme) {
-    if (theme === 'light') {
-        body.classList.add('light-mode');
-    } else {
-        body.classList.remove('light-mode');
-    }
-}
-
 citySelect.addEventListener('change', updateWeather);
 
 detailsButton.addEventListener('click', () => {
     const selectedCity = citySelect.value;
     window.open(`https://wttr.in/${selectedCity}`, '_blank');
-});
-
-const savedTheme = localStorage.getItem('theme');
-if (savedTheme) {
-    setTheme(savedTheme);
-}
-
-themeToggle.addEventListener('click', () => {
-    if (body.classList.contains('light-mode')) {
-        setTheme('dark');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        setTheme('light');
-        localStorage.setItem('theme', 'light');
-    }
 });
 
 // Initial updates
