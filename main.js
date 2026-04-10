@@ -126,7 +126,7 @@ class ExchangeCard extends HTMLElement {
                 .exchange-item h3 {
                     font-size: 0.8rem;
                     color: #555;
-                    margin-bottom: 0.5rem;
+                    margin-bottom: 0.3rem;
                     font-weight: 600;
                 }
                 .exchange-item p {
@@ -135,8 +135,8 @@ class ExchangeCard extends HTMLElement {
                     font-weight: bold;
                     color: #d32f2f;
                 }
-                .unit {
-                    font-size: 0.8rem;
+                .unit-label {
+                    font-size: 0.75rem;
                     color: #777;
                     margin-left: 0.2rem;
                 }
@@ -144,75 +144,109 @@ class ExchangeCard extends HTMLElement {
                     border-top: 1px solid #eee;
                     padding-top: 1rem;
                 }
-                .converter h4 { margin: 0 0 0.8rem 0; font-size: 0.9rem; color: #444; }
+                .converter h4 { margin: 0 0 1rem 0; font-size: 0.9rem; color: #444; text-align: center; }
+                .input-row {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.8rem;
+                }
                 .input-group {
                     display: flex;
                     gap: 0.5rem;
                     align-items: center;
+                    background: #f8f9fa;
+                    padding: 0.5rem 0.8rem;
+                    border-radius: 10px;
+                }
+                .input-group label {
+                    font-weight: bold;
+                    color: #555;
+                    min-width: 40px;
+                    font-size: 0.85rem;
                 }
                 input {
                     flex: 1;
-                    padding: 0.6rem;
-                    border-radius: 8px;
+                    padding: 0.5rem;
+                    border-radius: 6px;
                     border: 1px solid #ddd;
-                    font-size: 0.9rem;
+                    font-size: 1rem;
+                    text-align: right;
+                    width: 100px;
                 }
-                .calc-result {
+                input:focus { outline: none; border-color: #4A90E2; }
+                .symbol { font-size: 0.85rem; color: #888; min-width: 30px; }
+                .help-text {
+                    font-size: 0.75rem;
+                    color: #999;
+                    text-align: center;
                     margin-top: 0.8rem;
-                    font-size: 0.9rem;
-                    background: #f8f9fa;
-                    padding: 0.8rem;
-                    border-radius: 8px;
                 }
-                .calc-item { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
-                .calc-val { font-weight: bold; color: #4A90E2; }
             </style>
             <div class="exchange-card">
                 <div class="exchange-grid" id="exchange-data">
                     <div class="exchange-item">
                         <h3>USD</h3>
-                        <p><span id="usd-rate">-</span><span class="unit">KRW</span></p>
+                        <p><span id="usd-rate">-</span><span class="unit-label">KRW</span></p>
                     </div>
                     <div class="exchange-item">
                         <h3>JPY (100)</h3>
-                        <p><span id="jpy-rate">-</span><span class="unit">KRW</span></p>
+                        <p><span id="jpy-rate">-</span><span class="unit-label">KRW</span></p>
                     </div>
                 </div>
                 <div class="converter">
-                    <h4>환율 계산기 (KRW → 외화)</h4>
-                    <div class="input-group">
-                        <input type="number" id="krw-input" placeholder="금액 입력 (KRW)" min="0">
-                        <span>원</span>
-                    </div>
-                    <div class="calc-result" id="calc-result">
-                        <div class="calc-item">
-                            <span>미국 달러:</span>
-                            <span><span class="calc-val" id="res-usd">0.00</span> USD</span>
+                    <h4>양방향 환율 계산기</h4>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>한국</label>
+                            <input type="number" id="krw-input" placeholder="0" min="0">
+                            <span class="symbol">KRW</span>
                         </div>
-                        <div class="calc-item">
-                            <span>일본 엔:</span>
-                            <span><span class="calc-val" id="res-jpy">0.00</span> JPY</span>
+                        <div class="input-group">
+                            <label>미국</label>
+                            <input type="number" id="usd-input" placeholder="0" min="0">
+                            <span class="symbol">USD</span>
+                        </div>
+                        <div class="input-group">
+                            <label>일본</label>
+                            <input type="number" id="jpy-input" placeholder="0" min="0">
+                            <span class="symbol">JPY</span>
                         </div>
                     </div>
+                    <p class="help-text">* 어느 한 곳에 금액을 입력하면 자동 변환됩니다.</p>
                 </div>
             </div>
         `;
 
-        const input = this.shadowRoot.getElementById('krw-input');
-        input.addEventListener('input', () => this.calculate());
+        this.krwInput = this.shadowRoot.getElementById('krw-input');
+        this.usdInput = this.shadowRoot.getElementById('usd-input');
+        this.jpyInput = this.shadowRoot.getElementById('jpy-input');
+
+        this.krwInput.addEventListener('input', () => this.calculate('KRW'));
+        this.usdInput.addEventListener('input', () => this.calculate('USD'));
+        this.jpyInput.addEventListener('input', () => this.calculate('JPY'));
     }
 
-    calculate() {
+    calculate(source) {
         if (!this.rates) return;
-        const krw = parseFloat(this.shadowRoot.getElementById('krw-input').value) || 0;
-        const resUsd = this.shadowRoot.getElementById('res-usd');
-        const resJpy = this.shadowRoot.getElementById('res-jpy');
 
-        const usdRate = 1 / this.rates.USD;
-        const jpyRate = 100 / this.rates.JPY;
+        const usdToKrw = 1 / this.rates.USD;
+        const jpyToKrw = (100 / this.rates.JPY);
 
-        resUsd.textContent = (krw / usdRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        resJpy.textContent = (krw / jpyRate * 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (source === 'KRW') {
+            const val = parseFloat(this.krwInput.value) || 0;
+            this.usdInput.value = (val / usdToKrw).toFixed(2);
+            this.jpyInput.value = (val / jpyToKrw).toFixed(2);
+        } else if (source === 'USD') {
+            const val = parseFloat(this.usdInput.value) || 0;
+            const krwVal = val * usdToKrw;
+            this.krwInput.value = Math.round(krwVal);
+            this.jpyInput.value = (krwVal / jpyToKrw).toFixed(2);
+        } else if (source === 'JPY') {
+            const val = parseFloat(this.jpyInput.value) || 0;
+            const krwVal = val * (jpyToKrw / 100);
+            this.krwInput.value = Math.round(krwVal);
+            this.usdInput.value = (krwVal / usdToKrw).toFixed(2);
+        }
     }
 
     updateContent(rates) {
@@ -223,7 +257,6 @@ class ExchangeCard extends HTMLElement {
         const jpyToKrw = (100 / rates.JPY).toFixed(2);
         exchangeDataContainer.querySelector('#usd-rate').textContent = usdToKrw;
         exchangeDataContainer.querySelector('#jpy-rate').textContent = jpyToKrw;
-        this.calculate();
     }
 }
 
