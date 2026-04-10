@@ -164,8 +164,172 @@ class ExchangeCard extends HTMLElement {
     }
 }
 
+class QRCard extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+    render() {
+        this.shadowRoot.innerHTML = `
+            <style>
+                .qr-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                    background-color: rgba(255, 255, 255, 0.85);
+                    padding: 1.5rem;
+                    border-radius: 20px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                }
+                input {
+                    width: 100%;
+                    padding: 0.8rem;
+                    border-radius: 10px;
+                    border: 1px solid #ddd;
+                    box-sizing: border-box;
+                }
+                button {
+                    width: 100%;
+                    padding: 0.8rem;
+                    border-radius: 10px;
+                    border: none;
+                    background-color: #4A90E2;
+                    color: white;
+                    cursor: pointer;
+                    font-weight: bold;
+                }
+                #qr-image {
+                    margin-top: 1rem;
+                    display: none;
+                    width: 150px;
+                    height: 150px;
+                }
+            </style>
+            <div class="qr-container">
+                <input type="text" id="qr-input" placeholder="URL 또는 텍스트 입력">
+                <button id="qr-gen-btn">QR코드 생성</button>
+                <img id="qr-image" alt="QR Code">
+            </div>
+        `;
+
+        const btn = this.shadowRoot.getElementById('qr-gen-btn');
+        const input = this.shadowRoot.getElementById('qr-input');
+        const img = this.shadowRoot.getElementById('qr-image');
+
+        btn.addEventListener('click', () => {
+            const val = input.value.trim();
+            if (val) {
+                img.src = \`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=\${encodeURIComponent(val)}\`;
+                img.style.display = 'block';
+            }
+        });
+    }
+}
+
+class LottoCard extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+    render() {
+        this.shadowRoot.innerHTML = `
+            <style>
+                .lotto-container {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                    background-color: rgba(255, 255, 255, 0.85);
+                    padding: 1.5rem;
+                    border-radius: 20px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                }
+                .numbers {
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                }
+                .number {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: #f0f0f0;
+                    font-weight: bold;
+                    color: #333;
+                    font-size: 1.1rem;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                }
+                button {
+                    width: 100%;
+                    padding: 0.8rem;
+                    border-radius: 10px;
+                    border: none;
+                    background-color: #50E3C2;
+                    color: white;
+                    cursor: pointer;
+                    font-weight: bold;
+                }
+                .num-1 { background-color: #fbc02d; color: white; }
+                .num-10 { background-color: #1976d2; color: white; }
+                .num-20 { background-color: #d32f2f; color: white; }
+                .num-30 { background-color: #7b1fa2; color: white; }
+                .num-40 { background-color: #388e3c; color: white; }
+            </style>
+            <div class="lotto-container">
+                <div class="numbers" id="lotto-numbers">
+                    <div class="number">?</div>
+                    <div class="number">?</div>
+                    <div class="number">?</div>
+                    <div class="number">?</div>
+                    <div class="number">?</div>
+                    <div class="number">?</div>
+                </div>
+                <button id="lotto-btn">번호 생성하기</button>
+            </div>
+        `;
+
+        const btn = this.shadowRoot.getElementById('lotto-btn');
+        const container = this.shadowRoot.getElementById('lotto-numbers');
+
+        btn.addEventListener('click', () => {
+            const nums = [];
+            while(nums.length < 6) {
+                const r = Math.floor(Math.random() * 45) + 1;
+                if(!nums.includes(r)) nums.push(r);
+            }
+            nums.sort((a, b) => a - b);
+
+            container.innerHTML = nums.map(n => {
+                let colorClass = 'num-1';
+                if (n >= 11 && n <= 20) colorClass = 'num-10';
+                else if (n >= 21 && n <= 30) colorClass = 'num-20';
+                else if (n >= 31 && n <= 40) colorClass = 'num-30';
+                else if (n >= 41) colorClass = 'num-40';
+                return \`<div class="number \${colorClass}">\${n}</div>\`;
+            }).join('');
+        });
+    }
+}
+
 customElements.define('weather-card', WeatherCard);
 customElements.define('exchange-card', ExchangeCard);
+customElements.define('qr-card', QRCard);
+customElements.define('lotto-card', LottoCard);
 
 const citySelect = document.getElementById('city-select');
 const detailsButton = document.getElementById('details-button');

@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오늘의 날씨</title>
+    <title>유용한 정보</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>오늘의 날씨</h1>
+            <h1>유용한 정보</h1>
         </header>
         <main>
             <div class="city-selector">
@@ -25,17 +25,29 @@
                 <button id="details-button">오늘의 상세날씨</button>
             </div>
             
-            <section class="info-section">
-                <h2>실시간 날씨 정보</h2>
-                <p class="update-time" id="weather-updated">정보 업데이트: -</p>
-                <weather-card></weather-card>
-            </section>
+            <div class="info-grid">
+                <section class="info-section">
+                    <h2>실시간 날씨 정보</h2>
+                    <p class="update-time" id="weather-updated">정보 업데이트: -</p>
+                    <weather-card></weather-card>
+                </section>
 
-            <section class="info-section">
-                <h2>실시간 환율 정보 (KRW 기준)</h2>
-                <p class="update-time" id="exchange-updated">정보 업데이트: -</p>
-                <exchange-card></exchange-card>
-            </section>
+                <section class="info-section">
+                    <h2>실시간 환율 정보 (KRW 기준)</h2>
+                    <p class="update-time" id="exchange-updated">정보 업데이트: -</p>
+                    <exchange-card></exchange-card>
+                </section>
+
+                <section class="info-section">
+                    <h2>QR코드 생성기</h2>
+                    <qr-card></qr-card>
+                </section>
+
+                <section class="info-section">
+                    <h2>로또번호 생성기</h2>
+                    <lotto-card></lotto-card>
+                </section>
+            </div>
         </main>
     </div>
     <script type="module" src="main.js"></script>
