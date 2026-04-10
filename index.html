@@ -12,22 +12,21 @@
             <h1>유용한 정보</h1>
         </header>
         <main>
-            <div class="city-selector">
-                <select id="city-select">
-                    <option value="Busan">부산</option>
-                    <option value="Seoul">서울</option>
-                    <option value="Incheon">인천</option>
-                    <option value="Daegu">대구</option>
-                    <option value="Daejeon">대전</option>
-                    <option value="Gwangju">광주</option>
-                    <option value="Ulsan">울산</option>
-                </select>
-                <button id="details-button">오늘의 상세날씨</button>
-            </div>
-            
             <div class="info-grid">
                 <section class="info-section">
                     <h2>실시간 날씨 정보</h2>
+                    <div class="city-selector">
+                        <select id="city-select">
+                            <option value="Busan">부산</option>
+                            <option value="Seoul">서울</option>
+                            <option value="Incheon">인천</option>
+                            <option value="Daegu">대구</option>
+                            <option value="Daejeon">대전</option>
+                            <option value="Gwangju">광주</option>
+                            <option value="Ulsan">울산</option>
+                        </select>
+                        <button id="details-button">오늘의 상세날씨</button>
+                    </div>
                     <p class="update-time" id="weather-updated">정보 업데이트: -</p>
                     <weather-card></weather-card>
                 </section>
