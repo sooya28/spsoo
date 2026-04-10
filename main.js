@@ -180,54 +180,96 @@ class QRCard extends HTMLElement {
                 .qr-container {
                     display: flex;
                     flex-direction: column;
-                    align-items: center;
-                    gap: 1rem;
-                    background-color: rgba(255, 255, 255, 0.85);
+                    gap: 1.2rem;
+                    background: white;
                     padding: 1.5rem;
-                    border-radius: 20px;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    border-radius: 15px;
+                    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
                 }
+                .input-group {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+                label { font-size: 0.85rem; font-weight: 600; color: #666; }
                 input {
-                    width: 100%;
                     padding: 0.8rem;
-                    border-radius: 10px;
-                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    border: 2px solid #eee;
+                    font-size: 1rem;
+                    transition: border-color 0.3s;
                     box-sizing: border-box;
-                }
-                button {
                     width: 100%;
+                }
+                input:focus { outline: none; border-color: #4A90E2; }
+                .btn-group { display: flex; gap: 0.5rem; }
+                button {
+                    flex: 1;
                     padding: 0.8rem;
-                    border-radius: 10px;
+                    border-radius: 8px;
                     border: none;
                     background-color: #4A90E2;
                     color: white;
                     cursor: pointer;
                     font-weight: bold;
+                    transition: filter 0.2s;
                 }
-                #qr-image {
-                    margin-top: 1rem;
+                button:hover { filter: brightness(1.1); }
+                button.secondary { background-color: #f0f0f0; color: #333; }
+                .qr-result {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1rem;
+                    padding: 1rem;
+                    background: #f9f9f9;
+                    border-radius: 10px;
                     display: none;
-                    width: 150px;
-                    height: 150px;
+                }
+                img { width: 160px; height: 160px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                .download-link {
+                    font-size: 0.85rem;
+                    color: #4A90E2;
+                    text-decoration: none;
+                    font-weight: 600;
                 }
             </style>
             <div class="qr-container">
-                <input type="text" id="qr-input" placeholder="URL 또는 텍스트 입력">
-                <button id="qr-gen-btn">QR코드 생성</button>
-                <img id="qr-image" alt="QR Code">
+                <div class="input-group">
+                    <label>URL 또는 텍스트</label>
+                    <input type="text" id="qr-input" placeholder="이곳에 내용을 입력하세요">
+                </div>
+                <div class="btn-group">
+                    <button id="qr-gen-btn">생성하기</button>
+                    <button id="qr-clear-btn" class="secondary">지우기</button>
+                </div>
+                <div class="qr-result" id="qr-result-box">
+                    <img id="qr-image" alt="QR Code">
+                    <a id="download-link" class="download-link" href="#" target="_blank">이미지 다운로드</a>
+                </div>
             </div>
         `;
 
         const btn = this.shadowRoot.getElementById('qr-gen-btn');
+        const clearBtn = this.shadowRoot.getElementById('qr-clear-btn');
         const input = this.shadowRoot.getElementById('qr-input');
+        const resultBox = this.shadowRoot.getElementById('qr-result-box');
         const img = this.shadowRoot.getElementById('qr-image');
+        const downloadLink = this.shadowRoot.getElementById('download-link');
 
         btn.addEventListener('click', () => {
             const val = input.value.trim();
             if (val) {
-                img.src = \`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=\${encodeURIComponent(val)}\`;
-                img.style.display = 'block';
+                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(val)}`;
+                img.src = qrUrl;
+                downloadLink.href = qrUrl;
+                resultBox.style.display = 'flex';
             }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            resultBox.style.display = 'none';
         });
     }
 }
@@ -250,63 +292,69 @@ class LottoCard extends HTMLElement {
                     flex-direction: column;
                     align-items: center;
                     gap: 1.5rem;
-                    background-color: rgba(255, 255, 255, 0.85);
+                    background: white;
                     padding: 1.5rem;
-                    border-radius: 20px;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    border-radius: 15px;
+                    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
                 }
                 .numbers {
                     display: flex;
-                    gap: 0.5rem;
+                    gap: 0.8rem;
                     flex-wrap: wrap;
                     justify-content: center;
+                    min-height: 50px;
                 }
                 .number {
-                    width: 40px;
-                    height: 40px;
+                    width: 45px;
+                    height: 45px;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    background-color: #f0f0f0;
-                    font-weight: bold;
-                    color: #333;
-                    font-size: 1.1rem;
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    font-weight: 800;
+                    color: white;
+                    font-size: 1.2rem;
+                    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    transform: scale(0);
                 }
+                .number.show { transform: scale(1); }
                 button {
                     width: 100%;
-                    padding: 0.8rem;
+                    padding: 1rem;
                     border-radius: 10px;
                     border: none;
-                    background-color: #50E3C2;
+                    background: linear-gradient(135deg, #50E3C2, #4A90E2);
                     color: white;
                     cursor: pointer;
                     font-weight: bold;
+                    font-size: 1.1rem;
+                    box-shadow: 0 4px 15px rgba(80, 227, 194, 0.3);
                 }
-                .num-1 { background-color: #fbc02d; color: white; }
-                .num-10 { background-color: #1976d2; color: white; }
-                .num-20 { background-color: #d32f2f; color: white; }
-                .num-30 { background-color: #7b1fa2; color: white; }
-                .num-40 { background-color: #388e3c; color: white; }
+                button:active { transform: scale(0.98); }
+                .num-1 { background: radial-gradient(circle at 30% 30%, #fbc02d, #f57f17); }
+                .num-10 { background: radial-gradient(circle at 30% 30%, #1976d2, #0d47a1); }
+                .num-20 { background: radial-gradient(circle at 30% 30%, #d32f2f, #b71c1c); }
+                .num-30 { background: radial-gradient(circle at 30% 30%, #7b1fa2, #4a148c); }
+                .num-40 { background: radial-gradient(circle at 30% 30%, #388e3c, #1b5e20); }
+                .placeholder { color: #ccc; font-style: italic; }
             </style>
             <div class="lotto-container">
                 <div class="numbers" id="lotto-numbers">
-                    <div class="number">?</div>
-                    <div class="number">?</div>
-                    <div class="number">?</div>
-                    <div class="number">?</div>
-                    <div class="number">?</div>
-                    <div class="number">?</div>
+                    <p class="placeholder">버튼을 눌러 번호를 생성하세요</p>
                 </div>
-                <button id="lotto-btn">번호 생성하기</button>
+                <button id="lotto-btn">행운의 번호 추첨하기</button>
             </div>
         `;
 
         const btn = this.shadowRoot.getElementById('lotto-btn');
         const container = this.shadowRoot.getElementById('lotto-numbers');
 
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+            container.innerHTML = '';
+            
             const nums = [];
             while(nums.length < 6) {
                 const r = Math.floor(Math.random() * 45) + 1;
@@ -314,14 +362,24 @@ class LottoCard extends HTMLElement {
             }
             nums.sort((a, b) => a - b);
 
-            container.innerHTML = nums.map(n => {
+            for(let i=0; i<nums.length; i++) {
+                const n = nums[i];
                 let colorClass = 'num-1';
                 if (n >= 11 && n <= 20) colorClass = 'num-10';
                 else if (n >= 21 && n <= 30) colorClass = 'num-20';
                 else if (n >= 31 && n <= 40) colorClass = 'num-30';
                 else if (n >= 41) colorClass = 'num-40';
-                return \`<div class="number \${colorClass}">\${n}</div>\`;
-            }).join('');
+                
+                const ball = document.createElement('div');
+                ball.className = `number ${colorClass}`;
+                ball.textContent = n;
+                container.appendChild(ball);
+                
+                // Animating balls appearing one by one
+                await new Promise(r => setTimeout(r, 150));
+                ball.classList.add('show');
+            }
+            btn.disabled = false;
         });
     }
 }
