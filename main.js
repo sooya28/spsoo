@@ -26,18 +26,18 @@ class WeatherCard extends HTMLElement {
                 }
                 .weather-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
                     gap: 1rem;
                     text-align: center;
                 }
                 .weather-item h3 {
-                    font-size: 0.9rem;
+                    font-size: 0.8rem;
                     color: #555;
                     margin-bottom: 0.5rem;
                     font-weight: 600;
                 }
                 .weather-item p {
-                    font-size: 1.4rem;
+                    font-size: 1.2rem;
                     margin: 0;
                     color: #222;
                     font-weight: bold;
@@ -94,6 +94,7 @@ class ExchangeCard extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' });
+        this.rates = null;
     }
 
     connectedCallback() {
@@ -117,50 +118,112 @@ class ExchangeCard extends HTMLElement {
                 }
                 .exchange-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                    gap: 1.5rem;
+                    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                    gap: 1rem;
                     text-align: center;
+                    margin-bottom: 1.5rem;
                 }
                 .exchange-item h3 {
-                    font-size: 0.9rem;
+                    font-size: 0.8rem;
                     color: #555;
                     margin-bottom: 0.5rem;
                     font-weight: 600;
                 }
                 .exchange-item p {
-                    font-size: 1.6rem;
+                    font-size: 1.3rem;
                     margin: 0;
                     font-weight: bold;
                     color: #d32f2f;
                 }
                 .unit {
-                    font-size: 0.9rem;
+                    font-size: 0.8rem;
                     color: #777;
-                    margin-left: 0.3rem;
+                    margin-left: 0.2rem;
                 }
+                .converter {
+                    border-top: 1px solid #eee;
+                    padding-top: 1rem;
+                }
+                .converter h4 { margin: 0 0 0.8rem 0; font-size: 0.9rem; color: #444; }
+                .input-group {
+                    display: flex;
+                    gap: 0.5rem;
+                    align-items: center;
+                }
+                input {
+                    flex: 1;
+                    padding: 0.6rem;
+                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                    font-size: 0.9rem;
+                }
+                .calc-result {
+                    margin-top: 0.8rem;
+                    font-size: 0.9rem;
+                    background: #f8f9fa;
+                    padding: 0.8rem;
+                    border-radius: 8px;
+                }
+                .calc-item { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
+                .calc-val { font-weight: bold; color: #4A90E2; }
             </style>
             <div class="exchange-card">
                 <div class="exchange-grid" id="exchange-data">
                     <div class="exchange-item">
-                        <h3>미국 달러 (USD)</h3>
+                        <h3>USD</h3>
                         <p><span id="usd-rate">-</span><span class="unit">KRW</span></p>
                     </div>
                     <div class="exchange-item">
-                        <h3>일본 엔 (JPY 100)</h3>
+                        <h3>JPY (100)</h3>
                         <p><span id="jpy-rate">-</span><span class="unit">KRW</span></p>
+                    </div>
+                </div>
+                <div class="converter">
+                    <h4>환율 계산기 (KRW → 외화)</h4>
+                    <div class="input-group">
+                        <input type="number" id="krw-input" placeholder="금액 입력 (KRW)" min="0">
+                        <span>원</span>
+                    </div>
+                    <div class="calc-result" id="calc-result">
+                        <div class="calc-item">
+                            <span>미국 달러:</span>
+                            <span><span class="calc-val" id="res-usd">0.00</span> USD</span>
+                        </div>
+                        <div class="calc-item">
+                            <span>일본 엔:</span>
+                            <span><span class="calc-val" id="res-jpy">0.00</span> JPY</span>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
+
+        const input = this.shadowRoot.getElementById('krw-input');
+        input.addEventListener('input', () => this.calculate());
+    }
+
+    calculate() {
+        if (!this.rates) return;
+        const krw = parseFloat(this.shadowRoot.getElementById('krw-input').value) || 0;
+        const resUsd = this.shadowRoot.getElementById('res-usd');
+        const resJpy = this.shadowRoot.getElementById('res-jpy');
+
+        const usdRate = 1 / this.rates.USD;
+        const jpyRate = 100 / this.rates.JPY;
+
+        resUsd.textContent = (krw / usdRate).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        resJpy.textContent = (krw / jpyRate * 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
     updateContent(rates) {
         if (!rates) return;
+        this.rates = rates;
         const exchangeDataContainer = this.shadowRoot.getElementById('exchange-data');
         const usdToKrw = (1 / rates.USD).toFixed(2);
         const jpyToKrw = (100 / rates.JPY).toFixed(2);
         exchangeDataContainer.querySelector('#usd-rate').textContent = usdToKrw;
         exchangeDataContainer.querySelector('#jpy-rate').textContent = jpyToKrw;
+        this.calculate();
     }
 }
 
@@ -226,9 +289,9 @@ class QRCard extends HTMLElement {
                     border-radius: 10px;
                     display: none;
                 }
-                img { width: 160px; height: 160px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                img { width: 140px; height: 140px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
                 .download-link {
-                    font-size: 0.85rem;
+                    font-size: 0.8rem;
                     color: #4A90E2;
                     text-decoration: none;
                     font-weight: 600;
@@ -299,21 +362,21 @@ class LottoCard extends HTMLElement {
                 }
                 .numbers {
                     display: flex;
-                    gap: 0.8rem;
+                    gap: 0.5rem;
                     flex-wrap: wrap;
                     justify-content: center;
                     min-height: 50px;
                 }
                 .number {
-                    width: 45px;
-                    height: 45px;
+                    width: 40px;
+                    height: 40px;
                     border-radius: 50%;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     font-weight: 800;
                     color: white;
-                    font-size: 1.2rem;
+                    font-size: 1.1rem;
                     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
                     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
                     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -322,14 +385,14 @@ class LottoCard extends HTMLElement {
                 .number.show { transform: scale(1); }
                 button {
                     width: 100%;
-                    padding: 1rem;
+                    padding: 0.8rem;
                     border-radius: 10px;
                     border: none;
                     background: linear-gradient(135deg, #50E3C2, #4A90E2);
                     color: white;
                     cursor: pointer;
                     font-weight: bold;
-                    font-size: 1.1rem;
+                    font-size: 1rem;
                     box-shadow: 0 4px 15px rgba(80, 227, 194, 0.3);
                 }
                 button:active { transform: scale(0.98); }
@@ -338,13 +401,13 @@ class LottoCard extends HTMLElement {
                 .num-20 { background: radial-gradient(circle at 30% 30%, #d32f2f, #b71c1c); }
                 .num-30 { background: radial-gradient(circle at 30% 30%, #7b1fa2, #4a148c); }
                 .num-40 { background: radial-gradient(circle at 30% 30%, #388e3c, #1b5e20); }
-                .placeholder { color: #ccc; font-style: italic; }
+                .placeholder { color: #ccc; font-style: italic; font-size: 0.85rem; }
             </style>
             <div class="lotto-container">
                 <div class="numbers" id="lotto-numbers">
-                    <p class="placeholder">버튼을 눌러 번호를 생성하세요</p>
+                    <p class="placeholder">번호를 생성하세요</p>
                 </div>
-                <button id="lotto-btn">행운의 번호 추첨하기</button>
+                <button id="lotto-btn">번호 추첨</button>
             </div>
         `;
 
@@ -375,8 +438,7 @@ class LottoCard extends HTMLElement {
                 ball.textContent = n;
                 container.appendChild(ball);
                 
-                // Animating balls appearing one by one
-                await new Promise(r => setTimeout(r, 150));
+                await new Promise(r => setTimeout(r, 100));
                 ball.classList.add('show');
             }
             btn.disabled = false;
@@ -396,7 +458,6 @@ const exchangeUpdated = document.getElementById('exchange-updated');
 const weatherCard = document.querySelector('weather-card');
 const exchangeCard = document.querySelector('exchange-card');
 
-// City Coordinates for Open-Meteo
 const cityCoords = {
     'Seoul': { lat: 37.5665, lon: 126.9780 },
     'Busan': { lat: 35.1796, lon: 129.0756 },
@@ -413,8 +474,6 @@ async function fetchWeatherData(city) {
         const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
-        
-        // Merging current weather with some extra hourly info for humidity
         return {
             ...data.current_weather,
             relative_humidity_2m: data.hourly.relative_humidity_2m[0],
@@ -438,25 +497,22 @@ async function fetchExchangeRates() {
 }
 
 const weatherBackgrounds = {
-    'Sunny': 'https://images.unsplash.com/photo-1470252649358-96949c93eaa4?auto=format&fit=crop&w=1920&q=80', // 밝은 들판과 태양
-    'Cloudy': 'https://images.unsplash.com/photo-1500491460312-750eb08f2121?auto=format&fit=crop&w=1920&q=80', // 밝은 구름
-    'Rain': 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1920&q=80', // 비 오는 창가
-    'Snow': 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?auto=format&fit=crop&w=1920&q=80', // 하얀 눈 세상
+    'Sunny': 'https://images.unsplash.com/photo-1470252649358-96949c93eaa4?auto=format&fit=crop&w=1920&q=80',
+    'Cloudy': 'https://images.unsplash.com/photo-1500491460312-750eb08f2121?auto=format&fit=crop&w=1920&q=80',
+    'Rain': 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=1920&q=80',
+    'Snow': 'https://images.unsplash.com/photo-1483664852095-d6cc6870702d?auto=format&fit=crop&w=1920&q=80',
     'Mist': 'https://images.unsplash.com/photo-1485236715568-ddc5ee6ca227?auto=format&fit=crop&w=1920&q=80',
-    'Default': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80' // 화창한 산맥
+    'Default': 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80'
 };
 
 function updateBackground(code) {
     let bgUrl = weatherBackgrounds['Default'];
-    
-    // Open-Meteo codes
     if (code <= 1) bgUrl = weatherBackgrounds['Sunny'];
     else if (code <= 3) bgUrl = weatherBackgrounds['Cloudy'];
     else if (code >= 51 && code <= 67) bgUrl = weatherBackgrounds['Rain'];
     else if (code >= 71 && code <= 77) bgUrl = weatherBackgrounds['Snow'];
     else if (code >= 80 && code <= 82) bgUrl = weatherBackgrounds['Rain'];
     else if (code >= 45 && code <= 48) bgUrl = weatherBackgrounds['Mist'];
-
     document.body.style.backgroundImage = `url('${bgUrl}')`;
 }
 
@@ -468,14 +524,7 @@ async function updateWeather() {
         weatherCard.updateContent(data);
         updateBackground(data.weathercode);
         const now = new Date();
-        const timeString = now.toLocaleString('ko-KR', {
-            year: 'numeric', month: 'long', day: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit',
-            hour12: false
-        });
-        weatherUpdated.textContent = `제공 일시: ${timeString}`;
-    } else {
-        weatherUpdated.textContent = '날씨 정보를 가져오는 데 실패했습니다.';
+        weatherUpdated.textContent = `제공 일시: ${now.toLocaleString()}`;
     }
 }
 
@@ -489,12 +538,10 @@ async function updateExchangeRates() {
 }
 
 citySelect.addEventListener('change', updateWeather);
-
 detailsButton.addEventListener('click', () => {
     const selectedCity = citySelect.value;
     window.open(`https://www.google.com/search?q=${selectedCity}+weather`, '_blank');
 });
 
-// Initial updates
 updateWeather();
 updateExchangeRates();
