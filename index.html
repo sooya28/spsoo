@@ -6,9 +6,6 @@
     <title>수야의 유용한 도구들 - 실시간 정보 및 생활 도구 모음</title>
     <meta name="description" content="실시간 날씨, 양방향 환율 계산기, QR코드 생성기, 로또번호 추첨 등 일상 생활에 필요한 유용한 도구들을 한곳에서 제공합니다.">
     <meta name="keywords" content="날씨, 환율계산기, QR코드 생성, 로또번호, 생활도구, 수야">
-    <meta name="google-adsense-account" content="ca-pub-2996601196621860">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2996601196621860"
-     crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,7 +18,7 @@
                 <li><a href="#section-exchange">환율</a></li>
                 <li><a href="#section-qr">QR코드</a></li>
                 <li><a href="#section-lotto">로또</a></li>
-                <li><a href="#section-privacy">개인정보</a></li>
+                <li><a href="#section-contact">문의</a></li>
             </ul>
         </div>
     </nav>
@@ -33,123 +30,115 @@
         </header>
 
         <main>
-            <!-- 서비스 소개 섹션 (항상 표시 - 애드센스 가치 전달) -->
+            <!-- 서비스 소개 섹션 -->
             <section class="info-section static-section" id="section-about">
                 <h2>서비스 소개</h2>
                 <div class="section-description">
-                    <p>'수야의 유용한 도구들'은 사용자가 일상에서 자주 찾는 필수 정보와 도구들을 하나의 깔끔한 페이지에서 제공하기 위해 제작되었습니다. 복잡한 설치 없이 브라우저에서 즉시 실시간 날씨 정보를 확인하고, 정확한 환율 계산 및 디지털 도구들을 이용해 보세요.</p>
+                    <p>'수야의 유용한 도구들'은 사용자가 일상에서 자주 찾는 필수 정보와 도구들을 하나의 깔끔한 페이지에서 제공합니다. 복잡한 설치 없이 브라우저에서 즉시 실시간 정보를 확인해 보세요.</p>
                 </div>
             </section>
 
             <div class="info-grid">
                 <!-- 실시간 날씨 -->
                 <section class="info-section collapsed section-weather-style" id="section-weather">
-                    <div class="section-visual-header weather-icon-bg"></div>
-                    <div class="section-header">
-                        <h2>실시간 날씨 정보</h2>
-                        <button class="toggle-btn" onclick="toggleSection('section-weather')">펼치기</button>
+                    <div class="section-header" onclick="toggleSection('section-weather')">
+                        <div class="service-icon-box weather-icon"></div>
+                        <div class="section-header-text">
+                            <h2>실시간 날씨</h2>
+                            <p>주요 도시의 기상 상태 및 예보</p>
+                        </div>
+                        <button class="toggle-btn">펼치기</button>
                     </div>
                     <div class="section-content">
-                        <p class="tool-guide">전국 주요 도시의 실시간 기상 상태, 온도, 습도, 풍속 정보를 제공합니다. 외출 전 날씨를 확인하여 하루를 계획하세요.</p>
+                        <p class="tool-guide">전국 주요 도시의 기상 상태, 온도, 습도 정보를 제공합니다.</p>
                         <div class="city-selector">
                             <select id="city-select">
                                 <option value="Busan">부산</option>
                                 <option value="Seoul">서울</option>
                                 <option value="Incheon">인천</option>
                                 <option value="Daegu">대구</option>
-                                <option value="Daejeon">대전</option>
-                                <option value="Gwangju">광주</option>
-                                <option value="Ulsan">울산</option>
                             </select>
-                            <button id="details-button">상세 날씨 보기</button>
+                            <button id="details-button">날씨 보기</button>
                         </div>
-                        <p class="update-time" id="weather-updated">정보 업데이트: -</p>
                         <weather-card></weather-card>
                     </div>
                 </section>
 
                 <!-- 실시간 환율 -->
                 <section class="info-section collapsed section-exchange-style" id="section-exchange">
-                    <div class="section-visual-header exchange-icon-bg"></div>
-                    <div class="section-header">
-                        <h2>양방향 환율 계산기</h2>
-                        <button class="toggle-btn" onclick="toggleSection('section-exchange')">펼치기</button>
+                    <div class="section-header" onclick="toggleSection('section-exchange')">
+                        <div class="service-icon-box exchange-icon"></div>
+                        <div class="section-header-text">
+                            <h2>환율 계산기</h2>
+                            <p>실시간 환율 정보 및 스마트 계산</p>
+                        </div>
+                        <button class="toggle-btn">펼치기</button>
                     </div>
                     <div class="section-content">
-                        <p class="tool-guide">미국 달러(USD), 일본 엔화(JPY), 한국 원화(KRW) 간의 실시간 환율 정보를 제공하며, 어떤 통화로든 즉시 계산이 가능한 스마트 계산기를 탑재하고 있습니다.</p>
-                        <p class="update-time" id="exchange-updated">정보 업데이트: -</p>
+                        <p class="tool-guide">USD, JPY, KRW 간의 실시간 환율 정보를 제공합니다.</p>
                         <exchange-card></exchange-card>
                     </div>
                 </section>
 
                 <!-- QR코드 생성기 -->
                 <section class="info-section collapsed section-qr-style" id="section-qr">
-                    <div class="section-visual-header qr-icon-bg"></div>
-                    <div class="section-header">
-                        <h2>디지털 QR코드 생성기</h2>
-                        <button class="toggle-btn" onclick="toggleSection('section-qr')">펼치기</button>
+                    <div class="section-header" onclick="toggleSection('section-qr')">
+                        <div class="service-icon-box qr-icon"></div>
+                        <div class="section-header-text">
+                            <h2>QR코드 생성</h2>
+                            <p>URL 및 텍스트를 QR코드로 변환</p>
+                        </div>
+                        <button class="toggle-btn">펼치기</button>
                     </div>
                     <div class="section-content">
-                        <p class="tool-guide">URL, 이메일 주소, 일반 텍스트 등 원하는 내용을 입력하여 고화질 QR코드를 즉시 생성하고 다운로드할 수 있습니다. 마케팅이나 개인 정보 전달에 활용해 보세요.</p>
                         <qr-card></qr-card>
                     </div>
                 </section>
 
                 <!-- 로또번호 생성기 -->
                 <section class="info-section collapsed section-lotto-style" id="section-lotto">
-                    <div class="section-visual-header lotto-icon-bg"></div>
-                    <div class="section-header">
-                        <h2>행운의 로또번호 생성기</h2>
-                        <button class="toggle-btn" onclick="toggleSection('section-lotto')">펼치기</button>
+                    <div class="section-header" onclick="toggleSection('section-lotto')">
+                        <div class="service-icon-box lotto-icon"></div>
+                        <div class="section-header-text">
+                            <h2>로또 번호</h2>
+                            <p>행운의 번호 추첨 시스템</p>
+                        </div>
+                        <button class="toggle-btn">펼치기</button>
                     </div>
                     <div class="section-content">
-                        <p class="tool-guide">통계적 분석 대신 무작위 난수 생성 알고리즘을 사용하여 투명한 행운의 번호를 추첨합니다. 1부터 45까지의 번호 중 6개를 선정합니다.</p>
                         <lotto-card></lotto-card>
                     </div>
                 </section>
             </div>
 
-            <!-- 관리자에게 메시지 보내기 -->
+            <!-- 관리자 문의 -->
             <section class="info-section collapsed section-contact-style" id="section-contact">
-                <div class="section-visual-header contact-icon-bg"></div>
-                <div class="section-header">
-                    <h2>관리자에게 문의하기</h2>
-                    <button class="toggle-btn" onclick="toggleSection('section-contact')">펼치기</button>
+                <div class="section-header" onclick="toggleSection('section-contact')">
+                    <div class="service-icon-box contact-icon"></div>
+                    <div class="section-header-text">
+                        <h2>문의하기</h2>
+                        <p>서비스 개선 제안 및 피드백</p>
+                    </div>
+                    <button class="toggle-btn">펼치기</button>
                 </div>
                 <div class="section-content">
-                    <p class="tool-guide">서비스 이용 중 불편한 점이나 제안 사항이 있으시면 아래 양식을 통해 메시지를 보내주세요. 신속히 검토 후 답변 드리겠습니다.</p>
                     <form action="https://formspree.io/f/mgopjkyl" method="POST" class="contact-form">
                         <div class="form-group">
-                            <label for="email">이메일 주소</label>
-                            <input type="email" name="email" id="email" placeholder="email@example.com" required>
+                            <label>이메일</label>
+                            <input type="email" name="email" placeholder="email@example.com" required>
                         </div>
                         <div class="form-group">
-                            <label for="message">메시지 내용</label>
-                            <textarea name="message" id="message" rows="4" placeholder="문의 사항을 입력하세요" required></textarea>
+                            <label>메시지</label>
+                            <textarea name="message" rows="4" placeholder="내용을 입력하세요" required></textarea>
                         </div>
-                        <button type="submit" class="submit-btn">메시지 전송하기</button>
+                        <button type="submit" class="submit-btn" style="width: 100%; border: none; border-radius: 12px; cursor: pointer;">전송하기</button>
                     </form>
-                </div>
-            </section>
-
-            <!-- 개인정보처리방침 (애드센스 필수) -->
-            <section class="info-section collapsed" id="section-privacy">
-                <div class="section-header">
-                    <h2>개인정보처리방침</h2>
-                    <button class="toggle-btn" onclick="toggleSection('section-privacy')">펼치기</button>
-                </div>
-                <div class="section-content privacy-content">
-                    <p>본 사이트는 Google AdSense를 사용하여 광고를 게재합니다. Google 및 제3자 제공업체는 쿠키를 사용하여 사용자의 이전 웹사이트 방문 정보를 바탕으로 광고를 게재합니다.</p>
-                    <p>사용자는 Google의 광고 설정에서 맞춤 설정된 광고를 해제할 수 있습니다. 또한, 사용자의 활동 데이터는 서비스 개선 목적으로만 사용되며, 입력된 개인 정보(이메일 등)는 문의 응대 외의 목적으로 제3자에게 제공되지 않습니다.</p>
                 </div>
             </section>
         </main>
 
         <footer class="site-footer">
             <p>&copy; 2026 수야의 유용한 도구들. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#section-privacy">개인정보처리방침</a> | <a href="#section-contact">문의하기</a>
-            </div>
         </footer>
     </div>
 
