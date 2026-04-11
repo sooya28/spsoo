@@ -9,7 +9,7 @@ class WeatherCard extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = \`
             <style>
                 :host {
                     display: block;
@@ -67,7 +67,7 @@ class WeatherCard extends HTMLElement {
                     </div>
                 </div>
             </div>
-        `;
+        \`;
     }
 
     updateContent(current) {
@@ -83,10 +83,10 @@ class WeatherCard extends HTMLElement {
         };
 
         weatherDataContainer.querySelector('#current-condition').textContent = weatherCodes[current.weathercode] || '알 수 없음';
-        weatherDataContainer.querySelector('#temp-c').textContent = `${current.temperature}°C`;
-        weatherDataContainer.querySelector('#precipitation').textContent = `${current.precipitation !== undefined ? current.precipitation : 0}%`;
-        weatherDataContainer.querySelector('#wind-speed').textContent = `${current.windspeed} km/h`;
-        weatherDataContainer.querySelector('#humidity').textContent = `${current.relative_humidity_2m || '-'}%`;
+        weatherDataContainer.querySelector('#temp-c').textContent = \`\${current.temperature}°C\`;
+        weatherDataContainer.querySelector('#precipitation').textContent = \`\${current.precipitation !== undefined ? current.precipitation : 0}%\`;
+        weatherDataContainer.querySelector('#wind-speed').textContent = \`\${current.windspeed} km/h\`;
+        weatherDataContainer.querySelector('#humidity').textContent = \`\${current.relative_humidity_2m || '-'}%\`;
     }
 }
 
@@ -102,7 +102,7 @@ class ExchangeCard extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = \`
             <style>
                 :host {
                     display: block;
@@ -215,7 +215,7 @@ class ExchangeCard extends HTMLElement {
                     <p class="help-text">* 어느 한 곳에 금액을 입력하면 자동 변환됩니다.</p>
                 </div>
             </div>
-        `;
+        \`;
 
         this.krwInput = this.shadowRoot.getElementById('krw-input');
         this.usdInput = this.shadowRoot.getElementById('usd-input');
@@ -271,7 +271,7 @@ class QRCard extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = \`
             <style>
                 .qr-container {
                     display: flex;
@@ -344,7 +344,7 @@ class QRCard extends HTMLElement {
                     <a id="download-link" class="download-link" href="#" target="_blank">이미지 다운로드</a>
                 </div>
             </div>
-        `;
+        \`;
 
         const btn = this.shadowRoot.getElementById('qr-gen-btn');
         const clearBtn = this.shadowRoot.getElementById('qr-clear-btn');
@@ -356,7 +356,7 @@ class QRCard extends HTMLElement {
         btn.addEventListener('click', () => {
             const val = input.value.trim();
             if (val) {
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(val)}`;
+                const qrUrl = \`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=\${encodeURIComponent(val)}\`;
                 img.src = qrUrl;
                 downloadLink.href = qrUrl;
                 resultBox.style.display = 'flex';
@@ -381,7 +381,7 @@ class LottoCard extends HTMLElement {
     }
 
     render() {
-        this.shadowRoot.innerHTML = `
+        this.shadowRoot.innerHTML = \`
             <style>
                 .lotto-container {
                     display: flex;
@@ -442,7 +442,7 @@ class LottoCard extends HTMLElement {
                 </div>
                 <button id="lotto-btn">번호 추첨</button>
             </div>
-        `;
+        \`;
 
         const btn = this.shadowRoot.getElementById('lotto-btn');
         const container = this.shadowRoot.getElementById('lotto-numbers');
@@ -467,7 +467,7 @@ class LottoCard extends HTMLElement {
                 else if (n >= 41) colorClass = 'num-40';
                 
                 const ball = document.createElement('div');
-                ball.className = `number ${colorClass}`;
+                ball.className = \`number \${colorClass}\`;
                 ball.textContent = n;
                 container.appendChild(ball);
                 
@@ -479,21 +479,10 @@ class LottoCard extends HTMLElement {
     }
 }
 
-// ... (keep all custom elements classes as they are) ...
-
-function updateClock() {
-    const clockElement = document.getElementById('real-time-clock');
-    if (clockElement) {
-        const now = new Date();
-        const hours = String(now.getHours()).padStart(2, '0');
-        const minutes = String(now.getMinutes()).padStart(2, '0');
-        const seconds = String(now.getSeconds()).padStart(2, '0');
-        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
-    }
-}
-
-setInterval(updateClock, 1000);
-updateClock();
+customElements.define('weather-card', WeatherCard);
+customElements.define('exchange-card', ExchangeCard);
+customElements.define('qr-card', QRCard);
+customElements.define('lotto-card', LottoCard);
 
 const citySelect = document.getElementById('city-select');
 const detailsButton = document.getElementById('details-button');
@@ -515,7 +504,7 @@ const cityCoords = {
 async function fetchWeatherData(city) {
     try {
         const coords = cityCoords[city];
-        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability`);
+        const response = await fetch(\`https://api.open-meteo.com/v1/forecast?latitude=\${coords.lat}&longitude=\${coords.lon}&current_weather=true&hourly=relative_humidity_2m,precipitation_probability\`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         return {
@@ -557,18 +546,18 @@ function updateBackground(code) {
     else if (code >= 71 && code <= 77) bgUrl = weatherBackgrounds['Snow'];
     else if (code >= 80 && code <= 82) bgUrl = weatherBackgrounds['Rain'];
     else if (code >= 45 && code <= 48) bgUrl = weatherBackgrounds['Mist'];
-    document.body.style.backgroundImage = `url('${bgUrl}')`;
+    document.body.style.backgroundImage = \`url('\${bgUrl}')\`;
 }
 
 async function updateWeather() {
     const selectedCity = citySelect.value;
-    if (weatherUpdated) weatherUpdated.textContent = '정보를 가져오는 중...';
+    weatherUpdated.textContent = '정보를 가져오는 중...';
     const data = await fetchWeatherData(selectedCity);
     if (data) {
         weatherCard.updateContent(data);
         updateBackground(data.weathercode);
         const now = new Date();
-        if (weatherUpdated) weatherUpdated.textContent = `정보 업데이트: ${now.toLocaleString()}`;
+        weatherUpdated.textContent = \`제공 일시: \${now.toLocaleString()}\`;
     }
 }
 
@@ -577,17 +566,15 @@ async function updateExchangeRates() {
     if (data && data.rates) {
         exchangeCard.updateContent(data.rates);
         const now = new Date();
-        if (exchangeUpdated) exchangeUpdated.textContent = `정보 업데이트: ${now.toLocaleString()}`;
+        exchangeUpdated.textContent = \`정보 업데이트: \${now.toLocaleString()}\`;
     }
 }
 
-if (citySelect) citySelect.addEventListener('change', updateWeather);
-if (detailsButton) {
-    detailsButton.addEventListener('click', () => {
-        const selectedCity = citySelect.value;
-        window.open(`https://www.google.com/search?q=${selectedCity}+weather`, '_blank');
-    });
-}
+citySelect.addEventListener('change', updateWeather);
+detailsButton.addEventListener('click', () => {
+    const selectedCity = citySelect.value;
+    window.open(\`https://www.google.com/search?q=\${selectedCity}+weather\`, '_blank');
+});
 
 updateWeather();
 updateExchangeRates();
