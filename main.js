@@ -129,9 +129,23 @@ class LottoCard extends HTMLElement {
         this.shadowRoot.innerHTML = `
             <style>
                 .lotto-box { text-align: center; padding: 1rem; background: white; border-radius: 15px; }
-                .nums { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; min-height: 40px; }
-                .num { width: 35px; height: 35px; border-radius: 50%; background: #4A90E2; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-                button { width: 100%; padding: 0.8rem; background: #50E3C2; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+                .nums { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; min-height: 45px; flex-wrap: wrap; }
+                .num { 
+                    width: 40px; height: 40px; border-radius: 50%; 
+                    color: white; display: flex; align-items: center; justify-content: center; 
+                    font-weight: 800; font-size: 1.1rem;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+                }
+                /* Lotto Ball Colors */
+                .num-yellow { background: radial-gradient(circle at 30% 30%, #fbc02d, #f57f17); }
+                .num-blue { background: radial-gradient(circle at 30% 30%, #1976d2, #0d47a1); }
+                .num-red { background: radial-gradient(circle at 30% 30%, #d32f2f, #b71c1c); }
+                .num-gray { background: radial-gradient(circle at 30% 30%, #9e9e9e, #616161); }
+                .num-green { background: radial-gradient(circle at 30% 30%, #43a047, #1b5e20); }
+                
+                button { width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #50E3C2, #4A90E2); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3); transition: transform 0.1s; }
+                button:active { transform: scale(0.98); }
             </style>
             <div class="lotto-box">
                 <div class="nums" id="nums"></div>
@@ -147,7 +161,13 @@ class LottoCard extends HTMLElement {
             }
             nums.sort((a,b) => a-b).forEach(n => {
                 const d = document.createElement('div');
-                d.className = 'num';
+                let colorClass = 'num-yellow';
+                if (n > 10 && n <= 20) colorClass = 'num-blue';
+                else if (n > 20 && n <= 30) colorClass = 'num-red';
+                else if (n > 30 && n <= 40) colorClass = 'num-gray';
+                else if (n > 40) colorClass = 'num-green';
+                
+                d.className = `num ${colorClass}`;
                 d.textContent = n;
                 container.appendChild(d);
             });
