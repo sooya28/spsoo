@@ -479,10 +479,21 @@ class LottoCard extends HTMLElement {
     }
 }
 
-customElements.define('weather-card', WeatherCard);
-customElements.define('exchange-card', ExchangeCard);
-customElements.define('qr-card', QRCard);
-customElements.define('lotto-card', LottoCard);
+// ... (keep all custom elements classes as they are) ...
+
+function updateClock() {
+    const clockElement = document.getElementById('real-time-clock');
+    if (clockElement) {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+}
+
+setInterval(updateClock, 1000);
+updateClock();
 
 const citySelect = document.getElementById('city-select');
 const detailsButton = document.getElementById('details-button');
@@ -551,13 +562,13 @@ function updateBackground(code) {
 
 async function updateWeather() {
     const selectedCity = citySelect.value;
-    weatherUpdated.textContent = '정보를 가져오는 중...';
+    if (weatherUpdated) weatherUpdated.textContent = '정보를 가져오는 중...';
     const data = await fetchWeatherData(selectedCity);
     if (data) {
         weatherCard.updateContent(data);
         updateBackground(data.weathercode);
         const now = new Date();
-        weatherUpdated.textContent = `제공 일시: ${now.toLocaleString()}`;
+        if (weatherUpdated) weatherUpdated.textContent = `정보 업데이트: ${now.toLocaleString()}`;
     }
 }
 
@@ -566,15 +577,17 @@ async function updateExchangeRates() {
     if (data && data.rates) {
         exchangeCard.updateContent(data.rates);
         const now = new Date();
-        exchangeUpdated.textContent = `정보 업데이트: ${now.toLocaleString()}`;
+        if (exchangeUpdated) exchangeUpdated.textContent = `정보 업데이트: ${now.toLocaleString()}`;
     }
 }
 
-citySelect.addEventListener('change', updateWeather);
-detailsButton.addEventListener('click', () => {
-    const selectedCity = citySelect.value;
-    window.open(`https://www.google.com/search?q=${selectedCity}+weather`, '_blank');
-});
+if (citySelect) citySelect.addEventListener('change', updateWeather);
+if (detailsButton) {
+    detailsButton.addEventListener('click', () => {
+        const selectedCity = citySelect.value;
+        window.open(`https://www.google.com/search?q=${selectedCity}+weather`, '_blank');
+    });
+}
 
 updateWeather();
 updateExchangeRates();

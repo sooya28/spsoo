@@ -11,7 +11,10 @@
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#" class="nav-logo">수야의 도구들</a>
+            <div class="nav-left">
+                <a href="#" class="nav-logo">수야의 도구들</a>
+                <span id="real-time-clock" class="nav-clock">00:00:00</span>
+            </div>
             <ul class="nav-menu">
                 <li><a href="#section-about">소개</a></li>
                 <li><a href="#section-weather">날씨</a></li>
@@ -53,13 +56,17 @@
                         <p class="tool-guide">전국 주요 도시의 기상 상태, 온도, 습도 정보를 제공합니다.</p>
                         <div class="city-selector">
                             <select id="city-select">
-                                <option value="Busan">부산</option>
                                 <option value="Seoul">서울</option>
+                                <option value="Busan">부산</option>
                                 <option value="Incheon">인천</option>
                                 <option value="Daegu">대구</option>
+                                <option value="Daejeon">대전</option>
+                                <option value="Gwangju">광주</option>
+                                <option value="Ulsan">울산</option>
                             </select>
                             <button id="details-button">날씨 보기</button>
                         </div>
+                        <p class="update-time" id="weather-updated">정보 업데이트: -</p>
                         <weather-card></weather-card>
                     </div>
                 </section>
@@ -76,6 +83,7 @@
                     </div>
                     <div class="section-content">
                         <p class="tool-guide">USD, JPY, KRW 간의 실시간 환율 정보를 제공합니다.</p>
+                        <p class="update-time" id="exchange-updated">정보 업데이트: -</p>
                         <exchange-card></exchange-card>
                     </div>
                 </section>
