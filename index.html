@@ -45,6 +45,7 @@
                 <!-- 실시간 날씨 -->
                 <section class="info-section collapsed" id="section-weather">
                     <div class="section-header">
+                        <div class="service-icon-box weather-icon"></div>
                         <h2>실시간 날씨 정보</h2>
                         <button class="toggle-btn" onclick="toggleSection('section-weather')">펼치기</button>
                     </div>
@@ -70,6 +71,7 @@
                 <!-- 실시간 환율 -->
                 <section class="info-section collapsed" id="section-exchange">
                     <div class="section-header">
+                        <div class="service-icon-box exchange-icon"></div>
                         <h2>양방향 환율 계산기</h2>
                         <button class="toggle-btn" onclick="toggleSection('section-exchange')">펼치기</button>
                     </div>
@@ -83,6 +85,7 @@
                 <!-- QR코드 생성기 -->
                 <section class="info-section collapsed" id="section-qr">
                     <div class="section-header">
+                        <div class="service-icon-box qr-icon"></div>
                         <h2>디지털 QR코드 생성기</h2>
                         <button class="toggle-btn" onclick="toggleSection('section-qr')">펼치기</button>
                     </div>
@@ -95,6 +98,7 @@
                 <!-- 로또번호 생성기 -->
                 <section class="info-section collapsed" id="section-lotto">
                     <div class="section-header">
+                        <div class="service-icon-box lotto-icon"></div>
                         <h2>행운의 로또번호 생성기</h2>
                         <button class="toggle-btn" onclick="toggleSection('section-lotto')">펼치기</button>
                     </div>
@@ -108,6 +112,7 @@
             <!-- 관리자에게 메시지 보내기 -->
             <section class="info-section collapsed" id="section-contact">
                 <div class="section-header">
+                    <div class="service-icon-box contact-icon"></div>
                     <h2>관리자에게 문의하기</h2>
                     <button class="toggle-btn" onclick="toggleSection('section-contact')">펼치기</button>
                 </div>
@@ -143,20 +148,49 @@
         <footer class="site-footer">
             <p>&copy; 2026 수야의 유용한 도구들. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#section-privacy">개인정보처리방침</a> | <a href="#section-contact">문의하기</a>
+                <a href="#section-privacy" onclick="event.preventDefault(); expandAndScroll('section-privacy')">개인정보처리방침</a> | 
+                <a href="#section-contact" onclick="event.preventDefault(); expandAndScroll('section-contact')">문의하기</a>
             </div>
         </footer>
     </div>
 
     <script type="module" src="main.js"></script>
     <script>
-        function toggleSection(id) {
+        function toggleSection(id, forceOpen = false) {
             const section = document.getElementById(id);
+            if (!section) return;
             const btn = section.querySelector('.toggle-btn');
-            const isCollapsed = section.classList.toggle('collapsed');
-            btn.textContent = isCollapsed ? '펼치기' : '접기';
+            
+            if (forceOpen) {
+                section.classList.remove('collapsed');
+                if (btn) btn.textContent = '접기';
+            } else {
+                const isCollapsed = section.classList.toggle('collapsed');
+                if (btn) btn.textContent = isCollapsed ? '펼치기' : '접기';
+            }
         }
+
+        function expandAndScroll(id) {
+            toggleSection(id, true);
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Handle nav menu clicks
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href.startsWith('#section-')) {
+                    e.preventDefault();
+                    expandAndScroll(href.substring(1));
+                }
+            });
+        });
+
         window.toggleSection = toggleSection;
+        window.expandAndScroll = expandAndScroll;
     </script>
 </body>
 </html>

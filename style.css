@@ -184,6 +184,41 @@ h2::before {
     font-weight: 700 !important;
 }
 
+/* Iconic Illustration Box */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.5rem 2rem;
+}
+
+.service-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background-image: url('image1.png');
+    background-size: 500% auto;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.weather-icon { background-position: 0% 50%; background-color: #e3f2fd; }
+.exchange-icon { background-position: 25% 50%; background-color: #fff8e1; }
+.qr-icon { background-position: 50% 50%; background-color: #e0f2f1; }
+.lotto-icon { background-position: 75% 50%; background-color: #fffde7; }
+.contact-icon { background-position: 100% 50%; background-color: #f1f8e9; }
+
+.section-header h2 {
+    flex-grow: 1;
+    margin: 0;
+    padding-left: 0;
+}
+
+.section-header h2::before {
+    display: none; /* Hide old blue bar */
+}
+
 .city-selector {
     display: flex;
     gap: 1rem;
