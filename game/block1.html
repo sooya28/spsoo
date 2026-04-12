@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brick Breaker Challenge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1a202c;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            touch-action: none;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: #000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            max-width: 100%;
+            max-height: 100vh;
+        }
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        .btn {
+            pointer-events: auto;
+            transition: all 0.2s;
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .pause-blur {
+            filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container" class="relative w-full h-screen flex flex-col justify-center items-center">
+        <!-- Top Info UI -->
+        <div class="absolute top-4 left-0 w-full px-6 flex justify-between items-center text-white z-10 pointer-events-none">
+            <div class="flex gap-4">
+                <div class="bg-black/50 p-2 px-4 rounded-lg backdrop-blur-md">
+                    <span class="text-gray-400 text-[10px] block uppercase tracking-widest">Score</span>
+                    <span id="score-display" class="text-xl font-bold">0</span>
+                </div>
+                <button id="pause-btn-top" class="btn bg-white/10 hover:bg-white/20 p-2 px-3 rounded-lg backdrop-blur-md pointer-events-auto border border-white/10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                </button>
+            </div>
+            
+            <div class="bg-black/50 p-2 px-4 rounded-lg backdrop-blur-md text-right">
+                <span class="text-gray-400 text-[10px] block uppercase tracking-widest">Lives</span>
+                <div id="lives-display" class="flex gap-1 justify-end mt-1"></div>
+            </div>
+        </div>
+
+        <!-- Canvas Area -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Overlay Menu -->
+        <div id="menu-overlay" class="ui-overlay z-20">
+            <!-- Start Screen -->
+            <div id="start-screen" class="bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/20 text-center shadow-2xl max-w-sm w-11/12">
+                <h1 class="text-4xl font-black text-white mb-2 italic tracking-tighter">BRICK BREAKER</h1>
+                <p class="text-blue-300 mb-8">벽돌을 모두 깨고 점수를 획득하세요!</p>
+                <button id="start-btn" class="btn w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-4 rounded-2xl text-xl shadow-lg shadow-blue-500/30 mb-4">
+                    게임 시작
+                </button>
+                <p class="text-gray-400 text-xs mt-2 uppercase tracking-widest">Press Space or Click</p>
+            </div>
+
+            <!-- Pause Screen -->
+            <div id="pause-screen" class="hidden bg-black/40 backdrop-blur-md p-8 rounded-3xl border border-white/10 text-center shadow-2xl max-w-sm w-11/12">
+                <h2 class="text-3xl font-black text-white mb-8">PAUSED</h2>
+                <button id="resume-btn" class="btn w-full bg-white text-black font-bold py-4 rounded-2xl text-xl mb-4">
+                    계속하기
+                </button>
+                <p class="text-gray-300 text-sm">ESC 키를 눌러도 재개됩니다</p>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div id="game-over-screen" class="hidden bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/20 text-center shadow-2xl max-w-sm w-11/12">
+                <h2 class="text-3xl font-black text-red-400 mb-2">GAME OVER</h2>
+                <div class="my-6">
+                    <span class="text-gray-400 block text-sm">최종 점수</span>
+                    <span id="final-score" class="text-5xl font-bold text-white">0</span>
+                </div>
+                <button id="restart-btn" class="btn w-full bg-white text-black font-bold py-4 rounded-2xl text-xl">
+                    다시 시도
+                </button>
+            </div>
+
+            <!-- Victory Screen -->
+            <div id="win-screen" class="hidden bg-white/10 backdrop-blur-xl p-8 rounded-3xl border border-white/20 text-center shadow-2xl max-w-sm w-11/12">
+                <h2 class="text-3xl font-black text-yellow-400 mb-2">VICTORY!</h2>
+                <p class="text-white mb-6">모든 벽돌을 제거했습니다.</p>
+                <div class="my-6">
+                    <span id="win-score" class="text-5xl font-bold text-white">0</span>
+                </div>
+                <button id="play-again-btn" class="btn w-full bg-yellow-500 text-white font-bold py-4 rounded-2xl text-xl">
+                    다시 하기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * Sound System using Web Audio API
+         */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(frequency, type, duration, volume = 0.1) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = type; // 'sine', 'square', 'sawtooth', 'triangle'
+            oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            
+            gainNode.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + duration);
+        }
+
+        const sounds = {
+            paddle: () => playSound(150, 'triangle', 0.1, 0.1),
+            brick: () => playSound(400, 'sine', 0.1, 0.05),
+            wall: () => playSound(100, 'sine', 0.05, 0.05),
+            score: () => playSound(800, 'sine', 0.2, 0.05),
+            gameOver: () => {
+                playSound(300, 'sawtooth', 0.3, 0.1);
+                setTimeout(() => playSound(200, 'sawtooth', 0.5, 0.1), 200);
+            },
+            win: () => {
+                playSound(523.25, 'sine', 0.1, 0.1); // C5
+                setTimeout(() => playSound(659.25, 'sine', 0.1, 0.1), 100); // E5
+                setTimeout(() => playSound(783.99, 'sine', 0.3, 0.1), 200); // G5
+            }
+        };
+
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreDisplay = document.getElementById("score-display");
+        const livesDisplay = document.getElementById("lives-display");
+        const menuOverlay = document.getElementById("menu-overlay");
+        const startScreen = document.getElementById("start-screen");
+        const pauseScreen = document.getElementById("pause-screen");
+        const gameOverScreen = document.getElementById("game-over-screen");
+        const winScreen = document.getElementById("win-screen");
+        
+        let score = 0;
+        let lives = 3;
+        let gameActive = false;
+        let isPaused = false;
+        let animationId;
+
+        const dpr = window.devicePixelRatio || 1;
+        function resize() {
+            const containerWidth = window.innerWidth;
+            const containerHeight = window.innerHeight;
+            canvas.width = Math.min(containerWidth, 600) * dpr;
+            canvas.height = Math.min(containerHeight, 900) * dpr;
+            canvas.style.width = (canvas.width / dpr) + "px";
+            canvas.style.height = (canvas.height / dpr) + "px";
+            ctx.scale(dpr, dpr);
+            if (gameActive) initGameElements();
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        let paddle = {
+            width: 110,
+            height: 12,
+            x: 0,
+            y: 0,
+            color: "#3b82f6",
+            radius: 6
+        };
+
+        let ball = {
+            x: 0,
+            y: 0,
+            dx: 4,
+            dy: -4,
+            radius: 8,
+            color: "#ffffff"
+        };
+
+        const brickConfig = {
+            rowCount: 8,
+            columnCount: 5,
+            padding: 10,
+            offsetTop: 110,
+            offsetLeft: 20,
+            colors: ["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6"]
+        };
+
+        let bricks = [];
+
+        function initGameElements() {
+            const cw = canvas.width / dpr;
+            const ch = canvas.height / dpr;
+            paddle.x = (cw - paddle.width) / 2;
+            paddle.y = ch - 70;
+            resetBall();
+
+            const availableWidth = cw - (brickConfig.offsetLeft * 2);
+            const brickWidth = (availableWidth - (brickConfig.padding * (brickConfig.columnCount - 1))) / brickConfig.columnCount;
+            const brickHeight = 24;
+
+            bricks = [];
+            for (let c = 0; c < brickConfig.columnCount; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < brickConfig.rowCount; r++) {
+                    bricks[c][r] = { 
+                        x: 0, 
+                        y: 0, 
+                        status: 1, 
+                        color: brickConfig.colors[Math.floor(r / 2)] || "#fff" 
+                    };
+                    const brickX = (c * (brickWidth + brickConfig.padding)) + brickConfig.offsetLeft;
+                    const brickY = (r * (brickHeight + brickConfig.padding)) + brickConfig.offsetTop;
+                    bricks[c][r].x = brickX;
+                    bricks[c][r].y = brickY;
+                    bricks[c][r].width = brickWidth;
+                    bricks[c][r].height = brickHeight;
+                }
+            }
+        }
+
+        function resetBall() {
+            const cw = canvas.width / dpr;
+            ball.x = cw / 2;
+            ball.y = paddle.y - 15;
+            ball.dx = 4 * (Math.random() > 0.5 ? 1 : -1);
+            ball.dy = -4;
+        }
+
+        function movePaddle(e) {
+            if (!gameActive || isPaused) return;
+            const cw = canvas.width / dpr;
+            let relativeX;
+            if (e.type.includes('touch')) {
+                relativeX = e.touches[0].clientX - canvas.offsetLeft;
+            } else {
+                relativeX = e.clientX - canvas.offsetLeft;
+            }
+            if (relativeX > 0 && relativeX < cw) {
+                paddle.x = relativeX - paddle.width / 2;
+                if (paddle.x < 0) paddle.x = 0;
+                if (paddle.x + paddle.width > cw) paddle.x = cw - paddle.width;
+            }
+        }
+
+        document.addEventListener("mousemove", movePaddle);
+        document.addEventListener("touchmove", movePaddle, { passive: false });
+
+        // Keyboard Controls for Pause
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" || e.key === "p" || e.key === "P") {
+                togglePause();
+            }
+            if (e.key === " " && !gameActive) {
+                startGame();
+            }
+        });
+
+        function togglePause() {
+            if (!gameActive) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                showScreen(pauseScreen);
+                canvas.classList.add("pause-blur");
+            } else {
+                menuOverlay.classList.add("hidden");
+                canvas.classList.remove("pause-blur");
+                draw(); // Restart the loop
+            }
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.roundRect(paddle.x, paddle.y, paddle.width, paddle.height, paddle.radius);
+            ctx.fillStyle = paddle.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = ball.color;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawBricks() {
+            for (let c = 0; c < brickConfig.columnCount; c++) {
+                for (let r = 0; r < brickConfig.rowCount; r++) {
+                    const b = bricks[c][r];
+                    if (b.status === 1) {
+                        ctx.beginPath();
+                        ctx.roundRect(b.x, b.y, b.width, b.height, 4);
+                        ctx.fillStyle = b.color;
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        function updateUI() {
+            scoreDisplay.textContent = score;
+            livesDisplay.innerHTML = "";
+            for (let i = 0; i < 3; i++) {
+                const heart = document.createElement("span");
+                heart.innerHTML = "❤️";
+                heart.style.opacity = i < lives ? "1" : "0.2";
+                heart.style.fontSize = "14px";
+                livesDisplay.appendChild(heart);
+            }
+        }
+
+        function collisionDetection() {
+            for (let c = 0; c < brickConfig.columnCount; c++) {
+                for (let r = 0; r < brickConfig.rowCount; r++) {
+                    const b = bricks[c][r];
+                    if (b.status === 1) {
+                        if (ball.x > b.x && ball.x < b.x + b.width && ball.y > b.y && ball.y < b.y + b.height) {
+                            ball.dy = -ball.dy;
+                            b.status = 0;
+                            score += 10;
+                            sounds.brick();
+                            if (score % 100 === 0) sounds.score();
+                            
+                            if (score === brickConfig.rowCount * brickConfig.columnCount * 10) {
+                                gameActive = false;
+                                sounds.win();
+                                showScreen(winScreen);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function draw() {
+            if (!gameActive || isPaused) return;
+
+            const cw = canvas.width / dpr;
+            const ch = canvas.height / dpr;
+            
+            ctx.clearRect(0, 0, cw, ch);
+            
+            // Background
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(0, 0, cw, ch);
+
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            collisionDetection();
+            updateUI();
+
+            // Wall Collisions
+            if (ball.x + ball.dx > cw - ball.radius || ball.x + ball.dx < ball.radius) {
+                ball.dx = -ball.dx;
+                sounds.wall();
+            }
+            if (ball.y + ball.dy < ball.radius) {
+                ball.dy = -ball.dy;
+                sounds.wall();
+            } else if (ball.y + ball.dy > paddle.y - ball.radius) {
+                // Paddle Collision
+                if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+                    let hitPos = (ball.x - (paddle.x + paddle.width / 2)) / (paddle.width / 2);
+                    ball.dx = hitPos * 5;
+                    ball.dy = -ball.dy;
+                    ball.y = paddle.y - ball.radius;
+                    sounds.paddle();
+                } else if (ball.y + ball.dy > ch - ball.radius) {
+                    // Floor Collision
+                    lives--;
+                    if (!lives) {
+                        gameActive = false;
+                        sounds.gameOver();
+                        showScreen(gameOverScreen);
+                    } else {
+                        sounds.wall();
+                        resetBall();
+                    }
+                }
+            }
+
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+            animationId = requestAnimationFrame(draw);
+        }
+
+        function showScreen(screen) {
+            startScreen.classList.add("hidden");
+            pauseScreen.classList.add("hidden");
+            gameOverScreen.classList.add("hidden");
+            winScreen.classList.add("hidden");
+            menuOverlay.classList.remove("hidden");
+            menuOverlay.style.pointerEvents = "auto";
+            screen.classList.remove("hidden");
+
+            if (screen === gameOverScreen) document.getElementById("final-score").textContent = score;
+            if (screen === winScreen) document.getElementById("win-score").textContent = score;
+        }
+
+        function startGame() {
+            menuOverlay.classList.add("hidden");
+            menuOverlay.style.pointerEvents = "none";
+            canvas.classList.remove("pause-blur");
+            score = 0;
+            lives = 3;
+            gameActive = true;
+            isPaused = false;
+            initGameElements();
+            cancelAnimationFrame(animationId);
+            draw();
+        }
+
+        document.getElementById("start-btn").addEventListener("click", startGame);
+        document.getElementById("restart-btn").addEventListener("click", startGame);
+        document.getElementById("play-again-btn").addEventListener("click", startGame);
+        document.getElementById("resume-btn").addEventListener("click", togglePause);
+        document.getElementById("pause-btn-top").addEventListener("click", togglePause);
+
+        updateUI();
+    </script>
+</body>
+</html>

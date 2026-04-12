@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cannon Shooter - Artillery Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1a202c;
+            font-family: 'Pretendard', sans-serif;
+            touch-action: none;
+        }
+        canvas {
+            display: block;
+            background: linear-gradient(to bottom, #1e3a8a 0%, #3b82f6 100%);
+            touch-action: none;
+        }
+        .ui-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .btn-interact {
+            transition: all 0.2s;
+            pointer-events: auto;
+        }
+        .btn-interact:active {
+            transform: scale(0.9);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container" class="relative w-full h-screen overflow-hidden flex flex-col items-center">
+        <!-- 상단 상태바 -->
+        <div class="absolute top-6 left-0 w-full px-8 flex justify-between items-start z-10 pointer-events-none">
+            <div class="flex gap-4 pointer-events-auto">
+                <div class="ui-panel p-3 rounded-2xl min-w-[100px] text-center">
+                    <span class="text-blue-400 text-[10px] block uppercase font-bold tracking-widest">Stage</span>
+                    <span id="stage-display" class="text-2xl font-black text-white">1</span>
+                </div>
+                <div class="ui-panel p-3 rounded-2xl min-w-[100px] text-center">
+                    <span class="text-blue-400 text-[10px] block uppercase font-bold tracking-widest">Shots</span>
+                    <span id="shots-display" class="text-2xl font-black text-white">0</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-end gap-3 pointer-events-auto">
+                <button id="mute-btn" class="btn-interact ui-panel p-3 rounded-2xl flex items-center justify-center hover:bg-white/10">
+                    <div id="sound-icon-on">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </div>
+                    <div id="sound-icon-off" class="hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                    </div>
+                </button>
+                <div class="ui-panel p-3 rounded-2xl min-w-[140px] text-right border-l-4 border-yellow-500">
+                    <span class="text-yellow-400 text-[10px] block uppercase font-bold tracking-widest">Angle / Power</span>
+                    <span id="stats-display" class="text-xl font-black text-white">0° / 0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게임 메인 캔버스 -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- 오버레이 UI -->
+        <div id="overlay" class="absolute inset-0 flex items-center justify-center bg-black/50 z-20 pointer-events-auto">
+            <!-- 시작 화면 -->
+            <div id="start-screen" class="ui-panel p-10 rounded-[40px] text-center max-w-sm w-11/12 border-white/20">
+                <div class="mb-6 inline-block p-4 bg-blue-500/20 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21c-4.97 0-9-4.03-9-9s4.03-9 9-9a9 9 0 0 1 8.12 13.15"/><path d="M19 12a7 7 0 1 0-7 7"/><path d="m15 15 6 6"/><path d="m21 15-6 6"/></svg>
+                </div>
+                <h1 class="text-4xl font-black text-white mb-2 italic tracking-tight">CANNON MASTER</h1>
+                <p class="text-blue-300 mb-8 font-medium">정밀한 각도로 적을 섬멸하세요</p>
+                <div class="bg-black/30 p-5 rounded-2xl mb-8 text-left text-sm text-gray-300 space-y-3 border border-white/5">
+                    <p class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 드래그하여 섬세하게 조준</p>
+                    <p class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 멀리 당길수록 강력한 파워</p>
+                    <p class="flex items-center gap-2"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> 점선 궤적을 활용해 예측 사격</p>
+                </div>
+                <button id="start-btn" class="btn-interact w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-2xl text-xl shadow-xl shadow-blue-900/40">
+                    전투 개시
+                </button>
+            </div>
+
+            <!-- 결과 화면 -->
+            <div id="result-screen" class="hidden ui-panel p-10 rounded-[40px] text-center max-w-sm w-11/12 border-yellow-500/30">
+                <h2 id="result-title" class="text-4xl font-black text-yellow-400 mb-2 italic">MISSION CLEAR!</h2>
+                <p class="text-white mb-8 opacity-80">목표물을 완벽하게 파괴했습니다</p>
+                <div class="bg-black/30 p-6 rounded-3xl mb-8 border border-white/10">
+                    <span class="text-gray-400 block text-xs uppercase mb-1 tracking-widest">Total Shots</span>
+                    <span id="final-shots" class="text-6xl font-black text-white">0</span>
+                </div>
+                <button id="next-btn" class="btn-interact w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-2xl text-xl">
+                    다음 구역으로
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 사운드 시스템 ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let isMuted = false;
+
+        function playSound(freq, type, duration, vol, ramp = true) {
+            if (isMuted) return; // 음소거 상태면 소리 내지 않음
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            if (ramp) gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        const sfx = {
+            fire: () => {
+                playSound(150, 'sawtooth', 0.4, 0.2);
+                playSound(100, 'sine', 0.5, 0.3);
+            },
+            hit: () => {
+                playSound(60, 'square', 0.6, 0.3);
+                playSound(120, 'sawtooth', 0.4, 0.2);
+            },
+            land: () => playSound(80, 'sine', 0.2, 0.1),
+            aim: () => playSound(400, 'sine', 0.05, 0.02, false)
+        };
+
+        const muteBtn = document.getElementById('mute-btn');
+        const iconOn = document.getElementById('sound-icon-on');
+        const iconOff = document.getElementById('sound-icon-off');
+
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            if (isMuted) {
+                iconOn.classList.add('hidden');
+                iconOff.classList.remove('hidden');
+            } else {
+                iconOn.classList.remove('hidden');
+                iconOff.classList.add('hidden');
+                // 음소거 해제 시 짧은 알림음
+                playSound(440, 'sine', 0.1, 0.05);
+            }
+        });
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const stageDisplay = document.getElementById('stage-display');
+        const shotsDisplay = document.getElementById('shots-display');
+        const statsDisplay = document.getElementById('stats-display');
+        const overlay = document.getElementById('overlay');
+        const startScreen = document.getElementById('start-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        let stage = 1;
+        let shots = 0;
+        let isPlaying = false;
+        let isDragging = false;
+        let gravity = 0.22;
+        
+        let cannon = { x: 100, y: 0, angle: -Math.PI/4, recoil: 0 };
+        let target = { x: 0, y: 0, width: 70, height: 45, active: true, float: 0 };
+        let ball = { x: 0, y: 0, vx: 0, vy: 0, active: false, radius: 9, path: [] };
+        let explosion = { x: 0, y: 0, particles: [], active: false };
+        let dragStart = { x: 0, y: 0 };
+        let currentPower = 0;
+        let currentAngle = 0;
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            cannon.y = canvas.height - 110;
+            spawnTarget();
+        }
+
+        function spawnTarget() {
+            const minX = canvas.width * 0.5;
+            const maxX = canvas.width - 150;
+            target.x = minX + (Math.random() * (maxX - minX));
+            target.y = canvas.height - 110;
+            target.active = true;
+        }
+
+        function handleStart(x, y) {
+            if (!isPlaying || ball.active) return;
+            isDragging = true;
+            dragStart.x = x;
+            dragStart.y = y;
+        }
+
+        function handleMove(x, y) {
+            if (!isDragging) return;
+            const dx = dragStart.x - x;
+            const dy = dragStart.y - y;
+            currentAngle = Math.atan2(dy, dx);
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            currentPower = Math.min(dist / 15, 22); 
+            statsDisplay.textContent = `${Math.abs(Math.round(currentAngle * 180 / Math.PI))}° / ${Math.min(100, Math.round(currentPower * 5))}%`;
+            if (Math.random() > 0.9) sfx.aim();
+        }
+
+        function handleEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            if (currentPower > 3) fire();
+        }
+
+        canvas.addEventListener('mousedown', e => handleStart(e.clientX, e.clientY));
+        window.addEventListener('mousemove', e => handleMove(e.clientX, e.clientY));
+        window.addEventListener('mouseup', handleEnd);
+        canvas.addEventListener('touchstart', e => handleStart(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
+        window.addEventListener('touchmove', e => handleMove(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
+        window.addEventListener('touchend', handleEnd);
+
+        function fire() {
+            ball.x = cannon.x + Math.cos(currentAngle) * 60;
+            ball.y = cannon.y + Math.sin(currentAngle) * 60;
+            ball.vx = Math.cos(currentAngle) * currentPower;
+            ball.vy = Math.sin(currentAngle) * currentPower;
+            ball.active = true;
+            ball.path = [];
+            cannon.recoil = 15;
+            sfx.fire();
+            shots++;
+            shotsDisplay.textContent = shots;
+        }
+
+        function update() {
+            if (!isPlaying) return;
+            if (cannon.recoil > 0) cannon.recoil *= 0.9;
+            if (ball.active) {
+                ball.vy += gravity;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+                ball.path.push({x: ball.x, y: ball.y});
+                if (ball.path.length > 20) ball.path.shift();
+                if (ball.y > canvas.height - 90) {
+                    createExplosion(ball.x, canvas.height - 90, '#ccc');
+                    sfx.land();
+                    ball.active = false;
+                }
+                if (target.active && 
+                    ball.x > target.x && ball.x < target.x + target.width &&
+                    ball.y > target.y - target.height && ball.y < target.y + 20) {
+                    target.active = false;
+                    ball.active = false;
+                    createExplosion(ball.x, ball.y, '#f59e0b');
+                    sfx.hit();
+                    setTimeout(() => {
+                        document.getElementById('final-shots').textContent = shots;
+                        showScreen(resultScreen);
+                    }, 800);
+                }
+                if (ball.x > canvas.width + 100 || ball.x < -100) ball.active = false;
+            }
+            if (explosion.active) {
+                explosion.particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.life -= 0.02;
+                });
+                explosion.particles = explosion.particles.filter(p => p.life > 0);
+                if (explosion.particles.length === 0) explosion.active = false;
+            }
+            target.float += 0.05;
+        }
+
+        function createExplosion(x, y, color) {
+            explosion.active = true;
+            explosion.particles = [];
+            for(let i=0; i<15; i++) {
+                explosion.particles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    life: 1.0, color: color
+                });
+            }
+        }
+
+        function drawCannon() {
+            ctx.save();
+            ctx.translate(cannon.x, cannon.y);
+            ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.save();
+            ctx.rotate(isDragging ? currentAngle : -Math.PI/4);
+            ctx.translate(-cannon.recoil, 0); 
+            const pGrad = ctx.createLinearGradient(0, -18, 0, 18);
+            pGrad.addColorStop(0, '#475569'); pGrad.addColorStop(0.5, '#1e293b'); pGrad.addColorStop(1, '#0f172a');
+            ctx.fillStyle = pGrad;
+            ctx.beginPath(); ctx.roundRect(0, -18, 70, 36, [0, 12, 12, 0]); ctx.fill();
+            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 3; ctx.strokeRect(55, -18, 6, 36);
+            ctx.restore();
+            const bGrad = ctx.createLinearGradient(-45, 0, 45, 0);
+            bGrad.addColorStop(0, '#dc2626'); bGrad.addColorStop(1, '#991b1b');
+            ctx.fillStyle = bGrad;
+            ctx.beginPath(); ctx.roundRect(-45, -5, 90, 35, 12); ctx.fill();
+            ctx.fillStyle = '#334155'; ctx.beginPath(); ctx.arc(-28, 25, 18, 0, Math.PI*2); ctx.arc(28, 25, 18, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#94a3b8'; ctx.beginPath(); ctx.arc(-28, 25, 6, 0, Math.PI*2); ctx.arc(28, 25, 6, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        }
+
+        function drawTarget() {
+            if (!target.active) return;
+            const hover = Math.sin(target.float) * 5;
+            ctx.save();
+            ctx.translate(target.x + target.width/2, target.y + hover);
+            ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.roundRect(-target.width/2, -target.height, target.width, target.height, 12); ctx.fill();
+            ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(-22, -2, 14, 0, Math.PI*2); ctx.arc(22, -2, 14, 0, Math.PI*2); ctx.fill();
+            ctx.rotate(Math.PI + 0.4); ctx.fillStyle = '#d97706'; ctx.fillRect(0, -12, 45, 24);
+            ctx.restore();
+        }
+
+        function draw() {
+            const cw = canvas.width; const ch = canvas.height;
+            ctx.clearRect(0, 0, cw, ch);
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(0, ch - 90, cw, 90);
+            ctx.fillStyle = '#1e293b'; ctx.fillRect(0, ch - 90, cw, 4);
+            drawTarget(); drawCannon();
+            if (isDragging) {
+                ctx.beginPath(); ctx.setLineDash([6, 8]); ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                let tx = cannon.x + Math.cos(currentAngle) * 60; let ty = cannon.y + Math.sin(currentAngle) * 60;
+                let tvx = Math.cos(currentAngle) * currentPower; let tvy = Math.sin(currentAngle) * currentPower;
+                ctx.moveTo(tx, ty);
+                for(let i=0; i<40; i++) {
+                    tvy += gravity; tx += tvx; ty += tvy;
+                    ctx.lineTo(tx, ty); if(ty > ch - 90) break;
+                }
+                ctx.stroke(); ctx.setLineDash([]);
+            }
+            if (ball.active) {
+                ctx.beginPath(); ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)'; ctx.lineWidth = 3;
+                ball.path.forEach((p, i) => { if(i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); });
+                ctx.stroke();
+                ctx.fillStyle = '#f8fafc'; ctx.shadowBlur = 10; ctx.shadowColor = '#fff';
+                ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+            }
+            if (explosion.active) {
+                explosion.particles.forEach(p => {
+                    ctx.globalAlpha = p.life; ctx.fillStyle = p.color;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+                });
+                ctx.globalAlpha = 1.0;
+            }
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        function showScreen(screen) {
+            startScreen.classList.add('hidden'); resultScreen.classList.add('hidden');
+            overlay.classList.remove('hidden'); screen.classList.remove('hidden');
+        }
+
+        function startGame() {
+            overlay.classList.add('hidden');
+            isPlaying = true;
+            if (stage === 1) shots = 0;
+            shotsDisplay.textContent = shots; stageDisplay.textContent = stage;
+            init();
+        }
+
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('next-btn').addEventListener('click', () => { stage++; startGame(); });
+        window.addEventListener('resize', init);
+        init(); draw();
+    </script>
+</body>
+</html>

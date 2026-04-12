@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>달려라 꼬마 공룡 (Cute Dino Run)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #a1c4fd 0%, #c2e9fb 100%);
+            font-family: 'Jua', sans-serif;
+        }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: #fff;
+        }
+
+        canvas {
+            display: block;
+            background: linear-gradient(to bottom, #e0f7fa 0%, #fff 70%, #f1f8e9 100%);
+        }
+
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+        }
+
+        .score-text {
+            font-size: 24px;
+            color: #555;
+            text-shadow: 1px 1px 0 white;
+        }
+
+        #game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px 50px;
+            border-radius: 20px;
+            text-align: center;
+            display: none;
+            border: 5px solid #ff8a80;
+            z-index: 10;
+        }
+
+        h2 { color: #ff5252; margin-top: 0; }
+        .btn {
+            background-color: #81c784;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Jua', sans-serif;
+            margin-top: 10px;
+        }
+        .btn:hover { background-color: #66bb6a; }
+
+        .guide {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="canvas"></canvas>
+        <div id="ui-layer">
+            <div class="score-text">점수: <span id="score-val">0</span></div>
+        </div>
+        
+        <div id="game-over">
+            <h2>앗! 부딪혔어요!</h2>
+            <p id="final-score">최종 점수: 0</p>
+            <button class="btn" onclick="resetGame()">다시 달리기</button>
+        </div>
+        <div class="guide">스페이스바(Space) 또는 ↑ 키를 눌러 점프하세요!</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreVal = document.getElementById('score-val');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScoreText = document.getElementById('final-score');
+
+        canvas.width = 800;
+        canvas.height = 300;
+
+        // --- 웹 오디오 API 효과음 ---
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(freq, type, duration, vol) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
+        }
+
+        const SFX = {
+            jump: () => playSound(400, 'sine', 0.2, 0.1),
+            score: () => playSound(800, 'triangle', 0.1, 0.05),
+            die: () => {
+                playSound(200, 'sawtooth', 0.3, 0.1);
+                setTimeout(() => playSound(100, 'sawtooth', 0.4, 0.1), 100);
+            }
+        };
+
+        // --- 게임 객체 및 상태 ---
+        let score = 0;
+        let gameSpeed = 5;
+        let isGameOver = false;
+        let animationId;
+
+        let dino = {
+            x: 80,
+            y: 200,
+            width: 44,
+            height: 44,
+            dy: 0,
+            jumpForce: 12,
+            gravity: 0.6,
+            isJumping: false,
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                
+                // 몸통
+                ctx.fillStyle = '#8bc34a';
+                ctx.beginPath();
+                // x, y, w, h, radius
+                if(ctx.roundRect) {
+                    ctx.roundRect(0, 5, 40, 35, 10);
+                } else {
+                    ctx.fillRect(0, 5, 40, 35);
+                }
+                ctx.fill();
+
+                // 머리
+                ctx.beginPath();
+                if(ctx.roundRect) {
+                    ctx.roundRect(20, 0, 24, 25, 8);
+                } else {
+                    ctx.fillRect(20, 0, 24, 25);
+                }
+                ctx.fill();
+
+                // 눈
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(36, 8, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'black';
+                ctx.beginPath();
+                ctx.arc(37, 8, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 뿔
+                ctx.fillStyle = '#ffeb3b';
+                ctx.beginPath();
+                ctx.moveTo(5, 5); ctx.lineTo(10, -2); ctx.lineTo(15, 5); ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(15, 5); ctx.lineTo(20, -2); ctx.lineTo(25, 5); ctx.fill();
+
+                // 다리
+                ctx.fillStyle = '#689f38';
+                ctx.fillRect(5, 38, 10, 8);
+                ctx.fillRect(25, 38, 10, 8);
+
+                ctx.restore();
+            }
+        };
+
+        let obstacles = [];
+        let clouds = [];
+
+        function createCloud() {
+            return {
+                x: canvas.width + Math.random() * 400,
+                y: 30 + Math.random() * 80,
+                speed: 0.5 + Math.random() * 1,
+                size: 30 + Math.random() * 30
+            };
+        }
+
+        // 초기 구름 생성
+        for(let i=0; i<5; i++) clouds.push(createCloud());
+
+        // 이벤트 리스너
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'ArrowUp') {
+                if (!dino.isJumping && !isGameOver) {
+                    dino.dy = -dino.jumpForce;
+                    dino.isJumping = true;
+                    SFX.jump();
+                } else if (isGameOver) {
+                    resetGame();
+                }
+            }
+        });
+
+        function resetGame() {
+            isGameOver = false;
+            score = 0;
+            gameSpeed = 5;
+            obstacles = [];
+            dino.y = 200;
+            dino.dy = 0;
+            scoreVal.innerText = score;
+            gameOverScreen.style.display = 'none';
+            animate();
+        }
+
+        function animate() {
+            if (isGameOver) return;
+            animationId = requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 땅 그리기
+            ctx.fillStyle = '#cfd8dc';
+            ctx.fillRect(0, 245, canvas.width, 2);
+            ctx.fillStyle = '#f1f8e9';
+            ctx.fillRect(0, 247, canvas.width, 60);
+
+            // 구름 애니메이션
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            clouds.forEach(c => {
+                c.x -= c.speed;
+                if (c.x + c.size < 0) {
+                    c.x = canvas.width + 50;
+                    c.y = 30 + Math.random() * 80;
+                }
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.size/2, 0, Math.PI*2);
+                ctx.arc(c.x + c.size/3, c.y - c.size/4, c.size/3, 0, Math.PI*2);
+                ctx.arc(c.x - c.size/3, c.y - c.size/4, c.size/3, 0, Math.PI*2);
+                ctx.fill();
+            });
+
+            // 물리 연산
+            dino.dy += dino.gravity;
+            dino.y += dino.dy;
+
+            if (dino.y > 200) {
+                dino.y = 200;
+                dino.dy = 0;
+                dino.isJumping = false;
+            }
+
+            dino.draw();
+
+            // 장애물 생성
+            if (Math.random() < 0.015) {
+                obstacles.push({
+                    x: canvas.width,
+                    y: 215,
+                    width: 25,
+                    height: 35,
+                    draw() {
+                        ctx.fillStyle = '#ef5350';
+                        ctx.beginPath();
+                        if(ctx.roundRect) {
+                            ctx.roundRect(this.x, this.y, this.width, this.height, 5);
+                        } else {
+                            ctx.fillRect(this.x, this.y, this.width, this.height);
+                        }
+                        ctx.fill();
+                        ctx.fillStyle = '#b71c1c';
+                        ctx.fillRect(this.x - 2, this.y + 10, 4, 2);
+                        ctx.fillRect(this.x + this.width - 2, this.y + 20, 4, 2);
+                    }
+                });
+            }
+
+            // 장애물 루프
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                let obs = obstacles[i];
+                obs.x -= gameSpeed;
+                obs.draw();
+
+                // 충돌 감지
+                if (
+                    dino.x + 10 < obs.x + obs.width &&
+                    dino.x + dino.width - 10 > obs.x &&
+                    dino.y + 10 < obs.y + obs.height &&
+                    dino.y + dino.height - 5 > obs.y
+                ) {
+                    endGame();
+                    return;
+                }
+
+                // 점수 계산 및 제거
+                if (obs.x + obs.width < 0) {
+                    obstacles.splice(i, 1);
+                    score += 10;
+                    SFX.score();
+                    scoreVal.innerText = score;
+                    gameSpeed += 0.05; // 점점 빨라짐
+                }
+            }
+        }
+
+        function endGame() {
+            isGameOver = true;
+            cancelAnimationFrame(animationId);
+            SFX.die();
+            finalScoreText.innerText = '최종 점수: ' + score;
+            gameOverScreen.style.display = 'block';
+        }
+
+        // 게임 시작
+        animate();
+    </script>
+</body>
+</html>

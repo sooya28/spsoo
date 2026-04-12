@@ -21,6 +21,8 @@
                 <li><a href="#section-exchange">환율</a></li>
                 <li><a href="#section-qr">QR코드</a></li>
                 <li><a href="#section-lotto">로또</a></li>
+                <li><a href="#section-game">게임</a></li>
+                <li><a href="#section-date">날짜계산기</a></li>
                 <li><a href="#section-privacy">개인정보</a></li>
             </ul>
         </div>
@@ -105,6 +107,51 @@
                     <div class="section-content">
                         <p class="tool-guide">통계적 분석 대신 무작위 난수 생성 알고리즘을 사용하여 투명한 행운의 번호를 추첨합니다. 1부터 45까지의 번호 중 6개를 선정합니다.</p>
                         <lotto-card></lotto-card>
+                    </div>
+                </section>
+
+                <!-- 추억의 게임 -->
+                <section class="info-section collapsed" id="section-game">
+                    <div class="section-header">
+                        <div class="service-icon-box game-icon"></div>
+                        <h2>추억의 게임</h2>
+                        <button class="toggle-btn" onclick="toggleSection('section-game')">펼치기</button>
+                    </div>
+                    <div class="section-content">
+                        <p class="tool-guide">심심할 때 즐기는 추억의 미니게임들입니다. 원하는 게임을 선택하여 플레이해보세요.</p>
+                        <div class="game-grid">
+                            <a href="game/tetris.html" class="game-card">
+                                <span class="game-emoji">🧱</span>
+                                <span class="game-name">테트리스</span>
+                            </a>
+                            <a href="game/dino.html" class="game-card">
+                                <span class="game-emoji">🦖</span>
+                                <span class="game-name">디노런</span>
+                            </a>
+                            <a href="game/block1.html" class="game-card">
+                                <span class="game-emoji">🎾</span>
+                                <span class="game-name">벽돌깨기</span>
+                            </a>
+                            <a href="game/cannon1.html" class="game-card">
+                                <span class="game-emoji">💣</span>
+                                <span class="game-name">캐논게임</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 날짜 계산기 -->
+                <section class="info-section collapsed" id="section-date">
+                    <div class="section-header">
+                        <div class="service-icon-box date-icon"></div>
+                        <h2>날짜 계산기</h2>
+                        <button class="toggle-btn" onclick="toggleSection('section-date')">펼치기</button>
+                    </div>
+                    <div class="section-content">
+                        <p class="tool-guide">디데이, 기념일, 날짜 차이 등 다양한 날짜 관련 계산을 도와드립니다.</p>
+                        <div class="tool-action">
+                            <a href="util/date_calc.html" class="action-btn">날짜 계산기 실행하기</a>
+                        </div>
                     </div>
                 </section>
             </div>

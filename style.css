@@ -218,6 +218,91 @@ h2::before {
 .lotto-icon { background-position: 75% 50%; background-color: #fffde7; }
 .contact-icon { background-position: 100% 50%; background-color: #f1f8e9; }
 
+.game-icon { 
+    background-image: none !important; 
+    background-color: #fce4ec !important; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 30px; 
+}
+.game-icon::after { content: '🎮'; }
+
+.date-icon { 
+    background-image: none !important; 
+    background-color: #e8eaf6 !important; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 30px; 
+}
+.date-icon::after { content: '📅'; }
+
+/* Game Grid */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.game-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--text-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #eee;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+
+.game-emoji {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* Tool Action */
+.tool-action {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.action-btn {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(118, 75, 162, 0.4);
+    filter: brightness(1.1);
+}
+
 .section-header h2 {
     flex-grow: 1;
     margin: 0;
