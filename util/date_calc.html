@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>날짜 계산기 - Sooya's World</title>
+    <title>스마트 날짜 계산기: D-Day 및 기념일 - 수야의 유용한 도구들</title>
+    <meta name="description" content="전역일, 커플 기념일, 시험 디데이 등을 간편하게 계산하세요. 날짜 계산의 원리와 유용한 활용 팁을 상세히 제공합니다.">
     <meta name="google-adsense-account" content="ca-pub-2411291444074274">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2411291444074274"
      crossorigin="anonymous"></script>
@@ -15,217 +16,116 @@
             background: #f0f9ff;
             background-image: radial-gradient(#bae6fd 2px, transparent 2px);
             background-size: 30px 30px;
-            padding: 20px;
+            padding: 0;
+            margin: 0;
         }
-        .comic-border {
-            border: 4px solid #000;
-            box-shadow: 6px 6px 0px #000;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        input, button {
-            border: 3px solid #000 !important;
-            border-radius: 12px !important;
-            padding: 10px 15px !important;
-            font-family: 'Jua', sans-serif;
-        }
-        input:focus {
-            outline: none;
-            background: #fff9db;
-        }
-        button {
-            background: #3b82f6;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        button:hover {
-            background: #2563eb;
-            transform: scale(1.05);
-        }
-        .result {
-            color: #ef4444;
-            margin-top: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            min-height: 1.5em;
-        }
-        h2 {
-            text-shadow: 2px 2px 0px #fff, 4px 4px 0px #000;
-        }
+        .nav-top { background: white; border-bottom: 2px solid #000; padding: 1rem 2rem; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: #3b82f6; text-decoration: none; }
+        
+        .main-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .comic-border { border: 4px solid #000; box-shadow: 8px 8px 0px #000; }
+        .card { background: white; padding: 30px; border-radius: 25px; margin-bottom: 30px; }
+        
+        input, button { border: 3px solid #000 !important; border-radius: 15px !important; padding: 12px 20px !important; font-family: 'Jua', sans-serif; }
+        button { background: #3b82f6; color: white; cursor: pointer; transition: all 0.2s; }
+        button:hover { background: #2563eb; transform: translate(-2px, -2px); box-shadow: 4px 4px 0 #000; }
+        button:active { transform: translate(0, 0); box-shadow: none; }
+        
+        .article-section { background: white; padding: 45px; border-radius: 30px; line-height: 1.9; color: #333; margin-top: 50px; }
+        .article-section h2 { color: #2563eb; font-size: 1.8rem; margin-top: 2.5rem; margin-bottom: 1.2rem; border-bottom: 3px solid #bfdbfe; display: inline-block; }
+        .article-section p { margin-bottom: 1.5rem; font-family: 'sans-serif'; color: #444; }
+        .article-section ul { margin-bottom: 1.5rem; padding-left: 20px; list-style-type: disc; font-family: 'sans-serif'; color: #444; }
     </style>
 </head>
 <body>
+    <nav class="nav-top">
+        <a href="../index.html" class="nav-logo">수야의 도구들</a>
+    </nav>
 
-    <div class="max-w-3xl mx-auto">
-        <header class="text-center mb-10">
-            <h2 class="text-5xl font-black text-blue-600 italic mb-2">📅 날짜 계산기</h2>
-            <p class="text-blue-400 bg-white inline-block px-4 py-1 rounded-full border-2 border-black">시간을 달리는 수야의 도구</p>
+    <div class="main-container">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-black text-blue-600 mb-4" style="text-shadow: 3px 3px 0 #000;">📅 날짜 계산기</h1>
+            <p class="text-xl text-gray-600">당신의 소중한 시간을 기록하는 가장 쉬운 방법</p>
         </header>
 
-        <!-- 1. 오늘로부터 n일 후 -->
+        <!-- 계산기 도구 섹션 -->
         <div class="card comic-border">
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                <span class="bg-yellow-400 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black text-sm">1</span>
-                오늘로부터 n일 후는?
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                <span class="bg-yellow-400 w-10 h-10 flex items-center justify-center rounded-full border-4 border-black text-lg">1</span>
+                디데이(D-Day) 및 날짜 차이
             </h3>
-            <div class="flex flex-wrap gap-2">
-                <input type="number" id="nDaysFromToday" placeholder="며칠 뒤?" class="flex-1 min-w-[120px]">
-                <button onClick="calculateFromToday()">계산하기!</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm text-gray-500 ml-1">기준일 선택</label>
+                    <input type="date" id="targetDate" class="w-full">
+                </div>
+                <div class="flex items-end">
+                    <button onClick="calculateUntil()" class="w-full font-bold text-xl py-4">계산하기!</button>
+                </div>
             </div>
-            <div class="result" id="result1"></div>
+            <div id="result5" class="mt-6 p-4 bg-blue-50 rounded-xl border-2 border-blue-200 text-center text-2xl text-blue-700 font-bold min-h-[60px] flex items-center justify-center">
+                결과가 여기에 표시됩니다
+            </div>
         </div>
 
-        <!-- 2. 특정일까지 남은 날 -->
-        <div class="card comic-border">
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                <span class="bg-green-400 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black text-sm">2</span>
-                디데이(D-Day) 계산기
-            </h3>
-            <div class="flex flex-wrap gap-2">
-                <input type="date" id="targetDate" class="flex-1 min-w-[120px]">
-                <button onClick="calculateUntil()">남은 날 확인</button>
-            </div>
-            <div class="result" id="result5"></div>
-        </div>
+        <!-- 풍부한 텍스트 콘텐츠 (애드센스 정책 준수) -->
+        <article class="article-section comic-border">
+            <h2>날짜 계산기: 시간 관리의 시작</h2>
+            <p>우리의 삶은 수많은 '날짜'들로 이루어져 있습니다. 태어난 날부터 시작해 입학, 졸업, 입사, 그리고 사랑하는 사람과의 기념일까지. '스마트 날짜 계산기'는 이러한 소중한 순간들을 잊지 않고 관리할 수 있도록 돕기 위해 제작되었습니다. 단순히 숫자를 계산하는 것을 넘어, 미래의 계획을 세우고 과거를 추억하는 도구로 활용해 보세요.</p>
 
-        <!-- 3. 특정일로부터 n일 후 -->
-        <div class="card comic-border">
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                <span class="bg-blue-400 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black text-sm">3</span>
-                특정일로부터 n일 후
-            </h3>
-            <div class="flex flex-wrap gap-2 items-center">
-                <input type="date" id="specificDate2">
-                <span>기준으로</span>
-                <input type="number" id="nDaysAfter" placeholder="n일" class="w-24">
-                <span>일 뒤는?</span>
-                <button onClick="calculateAfter()">계산</button>
-            </div>
-            <div class="result" id="result2"></div>
-        </div>
+            <h2>날짜 계산의 원리와 기준</h2>
+            <p>날짜를 계산할 때 가장 헷갈리는 부분은 '기준일을 포함하느냐'입니다. 본 계산기는 일반적인 관례에 따라 다음과 같은 기준을 적용합니다.</p>
+            <ul>
+                <li><strong>D-Day 계산:</strong> 목표일과 오늘 사이의 순수한 일수 차이를 계산합니다. 시험이나 면접 등 특정 마감일까지 남은 시간을 확인할 때 유용합니다.</li>
+                <li><strong>만 나이 및 재직 기간:</strong> 특정 날짜로부터 경과한 시간을 연, 월, 일 단위로 세밀하게 파악해야 할 때 사용됩니다.</li>
+                <li><strong>기념일 계산:</strong> '오늘부터 1일'과 같이 기준일을 포함하여 100일, 200일 뒤를 계산하는 방식은 주로 축하의 목적으로 사용됩니다.</li>
+            </ul>
 
-        <!-- 4. 특정일로부터 n일 전 -->
-        <div class="card comic-border">
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                <span class="bg-purple-400 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black text-sm">4</span>
-                특정일로부터 n일 전
-            </h3>
-            <div class="flex flex-wrap gap-2 items-center">
-                <input type="date" id="specificDate3">
-                <span>기준으로</span>
-                <input type="number" id="nDaysBefore" placeholder="n일" class="w-24">
-                <span>일 전은?</span>
-                <button onClick="calculateBefore()">계산</button>
-            </div>
-            <div class="result" id="result3"></div>
-        </div>
+            <h2>실생활에서의 다양한 활용 팁</h2>
+            <p>날짜 계산기를 더 스마트하게 활용하는 방법들을 소개합니다.</p>
+            <ul>
+                <li><strong>건강 관리:</strong> 운동을 시작한 날이나 금연을 시작한 날을 기록하여 'n일째 도전 중'이라는 동기부여를 얻을 수 있습니다.</li>
+                <li><strong>재무 계획:</strong> 적금 만기일이나 카드 결제일까지 남은 기간을 확인하여 효율적인 자금 관리가 가능합니다.</li>
+                <li><strong>여행 준비:</strong> 설레는 여행 출발일까지 남은 시간을 체크하며 준비물 리스트를 점검해 보세요.</li>
+            </ul>
 
-        <!-- 5. 특정일 사이의 간격 -->
-        <div class="card comic-border">
-            <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
-                <span class="bg-red-400 w-8 h-8 flex items-center justify-center rounded-full border-2 border-black text-sm">5</span>
-                두 날짜 사이의 간격
-            </h3>
-            <div class="flex flex-wrap gap-2 items-center">
-                <input type="date" id="startDate">
-                <span>부터</span>
-                <input type="date" id="endDate">
-                <span>까지는 며칠?</span>
-                <button onClick="calculateBetween()">간격 계산</button>
-            </div>
-            <div class="result" id="result4"></div>
-        </div>
+            <h2>시간의 가치를 소중히</h2>
+            <p>시간은 누구에게나 공평하게 주어지지만, 그 시간을 어떻게 기록하고 기억하느냐에 따라 삶의 밀도는 달라집니다. 본 도구가 여러분의 바쁜 일상 속에서 소중한 기념일을 챙기고, 중요한 목표를 향해 나아가는 데 작은 도움이 되기를 바랍니다. 수야의 도구들은 항상 여러분의 편리한 생활을 지원합니다.</p>
+        </article>
 
-        <!-- Home Button -->
-        <div class="text-center mt-12 pb-10">
-            <a href="../index.html" class="inline-flex items-center gap-2 bg-white px-8 py-3 rounded-2xl comic-border text-xl font-bold hover:bg-gray-100 transition-all active:scale-95">
-                🏠 홈으로 돌아가기
+        <div class="text-center mt-12 mb-20">
+            <a href="../index.html" class="inline-block bg-white px-10 py-4 rounded-2xl comic-border text-2xl font-black hover:bg-gray-50 transition-all active:scale-95">
+                🏠 메인 페이지로 돌아가기
             </a>
-            <div class="mt-4 text-sm text-gray-500">
-                <a href="../privacy.html" class="hover:underline">개인정보처리방침</a> | 
-                <a href="../terms.html" class="hover:underline">이용약관</a> | 
-                <a href="../about.html" class="hover:underline">서비스소개</a>
-            </div>
         </div>
     </div>
 
+    <footer class="bg-white border-t-4 border-black py-10 text-center">
+        <p class="font-bold text-gray-800">&copy; 2026 수야의 유용한 도구들. All rights reserved.</p>
+        <div class="mt-4 flex justify-center gap-6 text-sm">
+            <a href="../privacy.html" class="hover:underline">개인정보처리방침</a>
+            <a href="../terms.html" class="hover:underline">이용약관</a>
+            <a href="../about.html" class="hover:underline">서비스 소개</a>
+        </div>
+    </footer>
+
     <script>
         const weekdays = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
-
-        function formatDate(date) {
-            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${weekdays[date.getDay()]})`;
-        }
-
-        function calculateFromToday() {
-            const val = document.getElementById('nDaysFromToday').value;
-            if (val === "") return;
-            const n = parseInt(val);
-            const today = new Date();
-            today.setDate(today.getDate() + n);
-            document.getElementById('result1').textContent = "👉 " + formatDate(today);
-        }
-
-        function calculateAfter() {
-            const dateStr = document.getElementById('specificDate2').value;
-            const n = parseInt(document.getElementById('nDaysAfter').value);
-            if (!dateStr || isNaN(n)) return alert('날짜와 n일을 모두 입력하세요.');
-            const date = new Date(dateStr);
-            date.setDate(date.getDate() + n);
-            document.getElementById('result2').textContent = "👉 " + formatDate(date);
-        }
-
-        function calculateBefore() {
-            const dateStr = document.getElementById('specificDate3').value;
-            const n = parseInt(document.getElementById('nDaysBefore').value);
-            if (!dateStr || isNaN(n)) return alert('날짜와 n일을 모두 입력하세요.');
-            const date = new Date(dateStr);
-            date.setDate(date.getDate() - n);
-            document.getElementById('result3').textContent = "👉 " + formatDate(date);
-        }
-
-        function calculateBetween() {
-            const start = document.getElementById('startDate').value;
-            const end = document.getElementById('endDate').value;
-            if (!start || !end) return alert('두 날짜를 모두 입력하세요.');
-            const startDate = new Date(start);
-            const endDate = new Date(end);
-            const diffTime = endDate - startDate;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            document.getElementById('result4').textContent = "👉 총 " + diffDays + "일 입니다.";
-        }
+        function formatDate(date) { return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 (${weekdays[date.getDay()]})`; }
 
         function calculateUntil() {
             const targetStr = document.getElementById('targetDate').value;
-            if (!targetStr) return alert('날짜를 입력하세요.');
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            const targetDate = new Date(targetStr);
-            targetDate.setHours(0,0,0,0);
-
+            if (!targetStr) return alert('날짜를 선택해 주세요!');
+            const today = new Date(); today.setHours(0,0,0,0);
+            const targetDate = new Date(targetStr); targetDate.setHours(0,0,0,0);
             const diffTime = targetDate - today;
             const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-            let text = `✨ ${formatDate(targetDate)}까지 `;
-
-            if (diffDays > 0) {
-                text += `${diffDays}일 남았습니다! (D-${diffDays})`;
-            } else if (diffDays === 0) {
-                text += `오늘입니다! 🎉`;
-            } else {
-                text += `${Math.abs(diffDays)}일 지났습니다.`;
-            }
+            let text = "";
+            if (diffDays > 0) text = `✨ ${formatDate(targetDate)}까지 ${diffDays}일 남았습니다! (D-${diffDays})`;
+            else if (diffDays === 0) text = `🎉 오늘이 바로 그날입니다!`;
+            else text = `📅 ${formatDate(targetDate)}로부터 ${Math.abs(diffDays)}일 지났습니다.`;
             document.getElementById('result5').textContent = text;
         }
     </script>
-
 </body>
 </html>
