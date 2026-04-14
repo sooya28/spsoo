@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문의하기 - 수야의 유용한 도구들</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-container { max-width: 600px; margin: 100px auto 50px; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); color: #333; }
+        .contact-container h1 { font-size: 2rem; margin-bottom: 1.5rem; text-align: center; }
+        .contact-container p { margin-bottom: 2rem; text-align: center; color: #666; }
+        .back-home { display: block; margin-top: 30px; text-align: center; color: #4A90E2; text-decoration: none; font-weight: bold; }
+        .back-home:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">수야의 도구들</a>
+        </div>
+    </nav>
+
+    <div class="contact-container">
+        <h1>문의하기</h1>
+        <p>서비스에 대한 제안이나 불편한 점이 있으시면 아래 양식을 작성해 주세요. 최대한 빠르게 답변해 드리겠습니다.</p>
+        
+        <form action="https://formspree.io/f/mgopjkyl" method="POST" class="contact-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label for="email" style="font-weight: bold;">이메일 주소</label>
+                <input type="email" name="email" id="email" placeholder="your@email.com" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 10px;">
+            </div>
+            <div class="form-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label for="message" style="font-weight: bold;">메시지</label>
+                <textarea name="message" id="message" rows="6" placeholder="문의하실 내용을 입력해 주세요" required style="padding: 0.8rem; border: 1px solid #ddd; border-radius: 10px; resize: vertical;"></textarea>
+            </div>
+            <button type="submit" class="submit-btn" style="padding: 1rem; background: #4A90E2; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: background 0.3s;">메시지 보내기</button>
+        </form>
+
+        <a href="index.html" class="back-home">← 홈으로 돌아가기</a>
+    </div>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 수야의 유용한 도구들. All rights reserved.</p>
+    </footer>
+</body>
+</html>

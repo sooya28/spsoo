@@ -101,28 +101,42 @@
             color: #ccc;
             border: 1px solid #444;
         }
+.btn {
+    padding: 12px 30px;
+    font-size: 14px;
+    background: linear-gradient(45deg, #00f2ff, #0066ff);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+}
 
-        .btn {
-            padding: 12px 30px;
-            font-size: 14px;
-            background: linear-gradient(45deg, #00f2ff, #0066ff);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s;
-        }
+.btn:hover {
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+    transform: translateY(-2px);
+}
 
-        .btn:hover {
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
-            transform: translateY(-2px);
-        }
+.home-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
 
-        #pause-status {
-            position: absolute;
+#pause-status {
+...
+<div class="home-link">
+<a href="../index.html" class="btn" style="padding: 8px 15px; font-size: 10px;">🏠 HOME</a>
+</div>
+
+<div id="game-wrapper">
+
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
