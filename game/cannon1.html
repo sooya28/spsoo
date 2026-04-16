@@ -196,7 +196,7 @@
             target.active = true;
         }
 
-        canvas.addEventListener('mousedown', e => { if(!isPlaying || ball.active) return; isDragging = true; dragStart = {x:e.offsetX, y:e.clientY}; });
+        canvas.addEventListener('mousedown', e => { if(!isPlaying || ball.active) return; isDragging = true; dragStart = {x:e.offsetX, y:e.offsetY}; });
         window.addEventListener('mousemove', e => {
             if(!isDragging) return;
             const rect = canvas.getBoundingClientRect();
@@ -228,6 +228,28 @@
             target.float += 0.05;
         }
 
+        function drawTrajectory() {
+            if (!isDragging) return;
+            ctx.beginPath();
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+            let tx = cannon.x;
+            let ty = cannon.y;
+            let tvx = Math.cos(currentAngle) * currentPower;
+            let tvy = Math.sin(currentAngle) * currentPower;
+            
+            for (let i = 0; i < 60; i++) {
+                ctx.moveTo(tx, ty);
+                tvy += gravity;
+                tx += tvx;
+                ty += tvy;
+                ctx.lineTo(tx, ty);
+                if (ty > canvas.height || tx > canvas.width || tx < 0) break;
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             // Draw Ground
@@ -237,6 +259,9 @@
                 ctx.fillStyle = '#f59e0b';
                 ctx.fillRect(target.x, target.y + Math.sin(target.float)*10, target.w, target.h);
             }
+            
+            drawTrajectory();
+
             // Draw Cannon
             ctx.save();
             ctx.translate(cannon.x, cannon.y);

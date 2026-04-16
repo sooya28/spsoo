@@ -30,7 +30,7 @@
         .main-layout {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 100px 20px 50px;
+            padding: 80px 20px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -38,13 +38,13 @@
         #game-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
-            aspect-ratio: 2/3;
+            max-width: 500px;
+            height: 600px;
             background: #000;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            margin-bottom: 50px;
+            margin-bottom: 30px;
         }
         canvas {
             width: 100%;
@@ -54,30 +54,30 @@
         .content-section {
             width: 100%;
             background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
+            padding: 30px;
             border-radius: 25px;
             line-height: 1.8;
             color: #cbd5e0;
         }
-        .content-section h2 { color: #63b3ed; font-size: 1.8rem; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #4a5568; padding-bottom: 10px; }
-        .content-section p { margin-bottom: 1.2rem; }
-        .content-section ul { margin-bottom: 1.2rem; padding-left: 20px; list-style-type: disc; }
+        .content-section h2 { color: #63b3ed; font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.8rem; border-bottom: 1px solid #4a5568; padding-bottom: 5px; }
+        .content-section p { margin-bottom: 1rem; font-size: 0.95rem; }
+        .content-section ul { margin-bottom: 1rem; padding-left: 20px; list-style-type: disc; font-size: 0.95rem; }
         
         .nav-header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 70px;
+            height: 60px;
             background: rgba(26, 32, 44, 0.9);
             backdrop-filter: blur(10px);
             z-index: 1000;
             display: flex;
             align-items: center;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .nav-logo { font-weight: 800; color: #63b3ed; text-decoration: none; font-size: 1.2rem; }
+        .nav-logo { font-weight: 800; color: #63b3ed; text-decoration: none; font-size: 1.1rem; }
         
         .ui-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; pointer-events: none; }
         .btn-interact { pointer-events: auto; transition: transform 0.2s; }
@@ -90,8 +90,8 @@
     </header>
 
     <main class="main-layout">
-        <div style="align-self: flex-start; margin-bottom: 20px;">
-            <a href="../index.html" style="color: #63b3ed; text-decoration: none; font-weight: bold;">← 메인 페이지로 돌아가기</a>
+        <div style="align-self: flex-start; margin-bottom: 15px;">
+            <a href="../index.html" style="color: #63b3ed; text-decoration: none; font-weight: bold; font-size: 0.9rem;">← 메인 페이지로 돌아가기</a>
         </div>
 
         <div id="game-container">
@@ -99,12 +99,12 @@
             <div class="absolute top-4 left-0 w-full px-6 flex justify-between items-center text-white z-10 pointer-events-none">
                 <div class="flex gap-4">
                     <div class="bg-black/50 p-2 px-4 rounded-lg backdrop-blur-md">
-                        <span class="text-gray-400 text-[10px] block uppercase tracking-widest">Score</span>
-                        <span id="score-display" class="text-xl font-bold">0</span>
+                        <span class="text-gray-400 text-[9px] block uppercase tracking-widest">Score</span>
+                        <span id="score-display" class="text-lg font-bold">0</span>
                     </div>
                 </div>
                 <div class="bg-black/50 p-2 px-4 rounded-lg backdrop-blur-md text-right">
-                    <span class="text-gray-400 text-[10px] block uppercase tracking-widest">Lives</span>
+                    <span class="text-gray-400 text-[9px] block uppercase tracking-widest">Lives</span>
                     <div id="lives-display" class="flex gap-1 justify-end mt-1"></div>
                 </div>
             </div>
@@ -112,10 +112,10 @@
             <canvas id="gameCanvas"></canvas>
 
             <div id="menu-overlay" class="ui-overlay z-20">
-                <div id="start-screen" class="bg-black/60 backdrop-blur-xl p-8 rounded-3xl border border-white/20 text-center shadow-2xl max-w-sm w-11/12 pointer-events-auto">
-                    <h1 class="text-3xl font-black text-white mb-2 italic">BRICK BREAKER</h1>
-                    <p class="text-blue-300 mb-8">벽돌을 깨고 스트레스를 날려보세요!</p>
-                    <button id="start-btn" class="btn-interact w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-4 rounded-2xl text-xl shadow-lg">
+                <div id="start-screen" class="bg-black/60 backdrop-blur-xl p-6 rounded-3xl border border-white/20 text-center shadow-2xl max-w-sm w-10/12 pointer-events-auto">
+                    <h1 class="text-2xl font-black text-white mb-2 italic">BRICK BREAKER</h1>
+                    <p class="text-blue-300 mb-6 text-sm">벽돌을 깨고 스트레스를 날려보세요!</p>
+                    <button id="start-btn" class="btn-interact w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-3 rounded-2xl text-lg shadow-lg">
                         게임 시작
                     </button>
                 </div>
@@ -134,36 +134,24 @@
 
         <article class="content-section">
             <h2>클래식 벽돌깨기: 아케이드의 전설</h2>
-            <p>'벽돌깨기(Brick Breaker)'는 1976년 아타리에서 출시한 '브레이크아웃(Breakout)'에서 시작된 역사적인 게임입니다. 스티브 잡스와 스티브 워즈니악이 개발에 참여한 것으로도 유명한 이 게임은, 단순한 규칙 속에 물리 엔진의 기초적인 원리를 담고 있어 수십 년간 수많은 변주곡을 만들어내며 사랑받아 왔습니다.</p>
+            <p>'벽돌깨기(Brick Breaker)'는 1976년 아타리에서 출시한 '브레이크아웃(Breakout)'에서 시작된 역사적인 게임입니다. 스티브 잡스와 스티브 워즈니악이 개발에 참여한 것으로도 유명합니다.</p>
 
             <h2>상세 조작 방법 안내</h2>
-            <p>본 게임은 데스크톱과 모바일 환경 모두에서 최적화된 조작을 지원합니다.</p>
             <ul>
-                <li><strong>PC 환경:</strong> 마우스를 좌우로 움직여 화면 하단의 패들을 조종합니다. 공이 바닥으로 떨어지지 않도록 패들로 튕겨내야 합니다.</li>
-                <li><strong>모바일/태블릿:</strong> 화면을 터치한 상태에서 좌우로 드래그하여 패들을 이동시킵니다.</li>
-                <li><strong>일시정지:</strong> 게임 중 키보드의 'P' 키 또는 'ESC' 키를 눌러 게임을 잠시 멈출 수 있습니다.</li>
+                <li><strong>PC 환경:</strong> 마우스를 좌우로 움직여 하단의 패들을 조종합니다.</li>
+                <li><strong>모바일/태블릿:</strong> 화면을 터치하여 좌우로 드래그하여 패들을 이동시킵니다.</li>
             </ul>
 
             <h2>고득점을 위한 핵심 전략</h2>
-            <p>단순히 벽돌을 깨는 것을 넘어 더 높은 점수와 효율적인 클리어를 위한 전략이 필요합니다.</p>
             <ul>
-                <li><strong>패들의 각도 활용:</strong> 공이 패들의 정중앙에 맞으면 수직에 가깝게 튀어 오르지만, 패들의 양 끝부분에 맞을수록 더 예리한 각도로 굴절됩니다. 이를 이용해 구석에 있는 벽돌을 공략하세요.</li>
-                <li><strong>터널 효과 노리기:</strong> 벽돌 더미의 옆면을 공략해 공을 벽돌 뒤쪽 공간으로 보내면, 공이 위쪽 벽과 벽돌 사이에서 갇힌 채 빠르게 튕기며 순식간에 많은 벽돌을 제거할 수 있습니다.</li>
-                <li><strong>집중력 유지:</strong> 벽돌이 줄어들수록 공의 속도가 미세하게 빨라질 수 있습니다. 공의 궤적을 끝까지 주시하는 것이 중요합니다.</li>
+                <li><strong>패들의 각도 활용:</strong> 공이 패들의 양 끝부분에 맞을수록 더 예리한 각도로 굴절됩니다.</li>
+                <li><strong>터널 효과 노리기:</strong> 공을 벽돌 뒤쪽 공간으로 보내면 순식간에 많은 벽돌을 제거할 수 있습니다.</li>
             </ul>
-
-            <h2>게임의 가치와 재미</h2>
-            <p>벽돌깨기는 단순한 오락을 넘어 짧은 시간 안에 고도의 집중력을 요구하는 게임입니다. 바쁜 일상 속에서 잠시 짬을 내어 즐기는 벽돌깨기 한 판은 스트레스 해소와 기분 전환에 큰 도움을 줄 것입니다. 지금 바로 최고 기록에 도전해 보세요!</p>
         </article>
     </main>
 
-    <footer class="site-footer" style="padding: 40px 0; text-align: center; color: #718096; border-top: 1px solid #2d3748;">
+    <footer class="site-footer" style="padding: 30px 0; text-align: center; color: #718096; border-top: 1px solid #2d3748;">
         <p>&copy; 2026 수야의 유용한 도구들. All rights reserved.</p>
-        <div class="mt-4">
-            <a href="../privacy.html" style="margin: 0 10px; color: #a0aec0; text-decoration: none;">개인정보처리방침</a> | 
-            <a href="../terms.html" style="margin: 0 10px; color: #a0aec0; text-decoration: none;">이용약관</a> | 
-            <a href="../about.html" style="margin: 0 10px; color: #a0aec0; text-decoration: none;">서비스 소개</a>
-        </div>
     </footer>
 
     <script>
@@ -193,13 +181,13 @@
         let paddle = { width: 80, height: 10, x: 0, y: 0 };
         let ball = { x: 0, y: 0, dx: 3, dy: -3, radius: 6 };
         let bricks = [];
-        const brickConfig = { row: 5, col: 5, padding: 8, top: 60, left: 20 };
+        const brickConfig = { row: 5, col: 6, padding: 6, top: 60, left: 15 };
 
         function initGame() {
             const cw = canvas.width / dpr;
             const ch = canvas.height / dpr;
             paddle.x = (cw - paddle.width) / 2;
-            paddle.y = ch - 40;
+            paddle.y = ch - 30;
             ball.x = cw / 2;
             ball.y = paddle.y - 10;
             ball.dx = 3; ball.dy = -3;
@@ -209,7 +197,7 @@
             for(let c=0; c<brickConfig.col; c++) {
                 bricks[c] = [];
                 for(let r=0; r<brickConfig.row; r++) {
-                    bricks[c][r] = { x: (c*(bWidth+brickConfig.padding))+brickConfig.left, y: (r*(20+brickConfig.padding))+brickConfig.top, w: bWidth, h: 20, status: 1 };
+                    bricks[c][r] = { x: (c*(bWidth+brickConfig.padding))+brickConfig.left, y: (r*(18+brickConfig.padding))+brickConfig.top, w: bWidth, h: 18, status: 1 };
                 }
             }
         }
@@ -260,8 +248,7 @@
             if (ball.y + ball.dy < ball.radius) ball.dy = -ball.dy;
             else if (ball.y + ball.dy > paddle.y - ball.radius) {
                 if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
-                    ball.dy = -Math.abs(ball.dy); // Ensure it always bounces up
-                    // Add some angle variation based on hit position
+                    ball.dy = -Math.abs(ball.dy); 
                     let hitPoint = (ball.x - (paddle.x + paddle.width/2)) / (paddle.width/2);
                     ball.dx = hitPoint * 5;
                 }
