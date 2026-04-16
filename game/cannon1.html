@@ -238,9 +238,56 @@
                 ctx.fillRect(target.x, target.y + Math.sin(target.float)*10, target.w, target.h);
             }
             // Draw Cannon
-            ctx.fillStyle = '#fff';
-            ctx.save(); ctx.translate(cannon.x, cannon.y); ctx.rotate(isDragging ? currentAngle : -Math.PI/4);
-            ctx.fillRect(0, -10, 50, 20); ctx.restore();
+            ctx.save();
+            ctx.translate(cannon.x, cannon.y);
+            ctx.rotate(isDragging ? currentAngle : -Math.PI/4);
+            
+            // Cannon Barrel (Metallic Gradient)
+            const barrelGrad = ctx.createLinearGradient(0, -12, 0, 12);
+            barrelGrad.addColorStop(0, '#4b5563');
+            barrelGrad.addColorStop(0.5, '#9ca3af');
+            barrelGrad.addColorStop(1, '#1f2937');
+            
+            ctx.fillStyle = barrelGrad;
+            // Main barrel
+            ctx.beginPath();
+            ctx.roundRect(0, -10, 50, 20, [0, 5, 5, 0]);
+            ctx.fill();
+            // Muzzle (The tip)
+            ctx.fillStyle = '#111827';
+            ctx.fillRect(45, -12, 8, 24);
+            // Decorative ring
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(15, -11, 5, 22);
+            
+            ctx.restore();
+
+            // Draw Cannon Base & Wheel (Stationary)
+            ctx.save();
+            ctx.translate(cannon.x, cannon.y);
+            // Base
+            ctx.fillStyle = '#374151';
+            ctx.beginPath();
+            ctx.moveTo(-20, 20);
+            ctx.lineTo(20, 20);
+            ctx.lineTo(10, -5);
+            ctx.lineTo(-10, -5);
+            ctx.closePath();
+            ctx.fill();
+            // Wheel
+            ctx.beginPath();
+            ctx.arc(0, 15, 12, 0, Math.PI*2);
+            ctx.fillStyle = '#1f2937';
+            ctx.fill();
+            ctx.strokeStyle = '#9ca3af';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            // Wheel center
+            ctx.beginPath();
+            ctx.arc(0, 15, 3, 0, Math.PI*2);
+            ctx.fillStyle = '#f59e0b';
+            ctx.fill();
+            ctx.restore();
             // Draw Ball
             if(ball.active) { ctx.beginPath(); ctx.arc(ball.x, ball.y, 8, 0, Math.PI*2); ctx.fill(); }
             update(); requestAnimationFrame(draw);

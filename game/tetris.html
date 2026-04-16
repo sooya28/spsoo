@@ -17,7 +17,6 @@
     <meta name="google-adsense-account" content="ca-pub-2411291444074274">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2411291444074274"
      crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../style.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
@@ -34,13 +33,29 @@
             min-height: 100vh;
         }
 
+        .navbar {
+            width: 100%;
+            height: 70px;
+            background: rgba(26, 32, 44, 0.9);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-logo { font-weight: 800; color: #00f2ff; text-decoration: none; font-size: 1.2rem; }
+
         .game-layout {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
             max-width: 1000px;
-            padding: 80px 20px 40px;
+            padding: 100px 20px 40px;
         }
 
         #game-wrapper {
@@ -63,7 +78,7 @@
         #side-panel {
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: flex-start;
             width: 150px;
             font-family: 'Orbitron', sans-serif;
         }
@@ -120,18 +135,25 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             font-family: 'Orbitron', sans-serif;
+            transition: transform 0.2s;
         }
+        .btn-game:hover { transform: scale(1.05); }
 
-        .home-link { margin-bottom: 20px; }
-        .home-link a { color: #888; text-decoration: none; font-weight: bold; }
-        .home-link a:hover { color: #fff; }
+        .home-link { margin-bottom: 20px; align-self: flex-start; }
+        .home-link a { color: #00f2ff; text-decoration: none; font-weight: bold; }
+        
+        #pause-status {
+            display: none;
+            color: #ffde00;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">수야의 도구들</a>
-        </div>
+        <a href="../index.html" class="nav-logo">수야의 도구들</a>
     </nav>
 
     <div class="game-layout">
@@ -142,71 +164,57 @@
         <div id="game-wrapper">
             <canvas id="tetris" width="240" height="400"></canvas>
             <div id="side-panel">
-                <div>
-                    <div class="stat-box">
-                        <div class="stat-label">NEXT</div>
-                        <canvas id="next" width="80" height="80"></canvas>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">SCORE</div>
-                        <div id="score" class="stat-value">0</div>
-                    </div>
+                <div class="stat-box">
+                    <div class="stat-label">NEXT</div>
+                    <canvas id="next" width="80" height="80"></canvas>
                 </div>
-                <div style="font-size: 10px; color: #555; text-align: center;">P: 일시정지</div>
+                <div class="stat-box">
+                    <div class="stat-label">SCORE</div>
+                    <div id="score" class="stat-value">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">LINES</div>
+                    <div id="lines" class="stat-value">0</div>
+                </div>
+                <div style="font-size: 10px; color: #888; text-align: center; line-height: 1.5;">
+                    P: 일시정지<br>Space: 하드드롭
+                </div>
+                <div id="pause-status">PAUSED</div>
             </div>
 
             <div id="start-screen" class="overlay">
-                <h1 style="font-family: 'Orbitron'; color: #00f2ff;">NEON TETRIS</h1>
+                <h1 style="font-family: 'Orbitron'; color: #00f2ff; margin-bottom: 20px;">NEON TETRIS</h1>
                 <button id="start-btn" class="btn-game">START</button>
             </div>
             <div id="game-over-screen" class="overlay" style="display: none;">
-                <h1 style="font-family: 'Orbitron'; color: #ff0d72;">GAME OVER</h1>
+                <h1 style="font-family: 'Orbitron'; color: #ff0d72; margin-bottom: 10px;">GAME OVER</h1>
+                <div id="final-score-display" style="margin-bottom: 20px; font-family: 'Orbitron';">Score: 0</div>
                 <button id="restart-btn" class="btn-game">RETRY</button>
             </div>
         </div>
 
-        <!-- 풍부한 텍스트 콘텐츠 추가 (애드센스 정책 준수) -->
         <article class="game-content-info">
             <h2>네온 테트리스 마스터: 클래식의 귀환</h2>
-            <p>테트리스는 1984년 소비에트 연방의 프로그래머 알렉세이 파지노프가 처음 개발한 이후, 전 세계에서 가장 사랑받는 퍼즐 게임으로 자리 잡았습니다. '네온 테트리스 마스터'는 이러한 클래식한 게임성을 현대적인 네온 그래픽과 부드러운 애니메이션으로 재해석한 버전입니다.</p>
+            <p>테트리스는 1984년 소비에트 연방의 프로그래머 알렉세이 파지노프가 처음 개발한 이후, 전 세계에서 가장 사랑받는 퍼즐 게임으로 자리 잡았습니다.</p>
             
-            <h2>테트리스 게임의 유래와 역사</h2>
-            <p>테트리스라는 이름은 그리스어 접두사인 'Tetra-'(4를 의미)와 개발자가 좋아하던 스포츠인 'Tennis'의 합성어입니다. 게임에 등장하는 7가지 블록은 모두 4개의 정사각형 조각으로 구성되어 있으며, 이를 '테트로미노(Tetromino)'라고 부릅니다. 단순한 규칙 속에 숨겨진 무궁무진한 전략성은 수십 년이 지난 지금까지도 수많은 플레이어를 매료시키고 있습니다.</p>
-
             <h2>효과적인 게임 조작 방법</h2>
             <ul>
-                <li><strong>좌우 화살표 (←, →):</strong> 블록을 왼쪽이나 오른쪽으로 한 칸씩 이동합니다.</li>
-                <li><strong>위 화살표 (↑):</strong> 블록을 시계 방향으로 90도 회전시킵니다. 벽 근처에서는 '벽 차기(Wall Kick)' 기술이 적용되어 회전이 가능합니다.</li>
+                <li><strong>좌우 화살표 (←, →):</strong> 블록을 왼쪽이나 오른쪽으로 이동합니다.</li>
+                <li><strong>위 화살표 (↑):</strong> 블록을 시계 방향으로 회전시킵니다.</li>
                 <li><strong>아래 화살표 (↓):</strong> 블록의 하강 속도를 높입니다(Soft Drop).</li>
                 <li><strong>스페이스바 (Space):</strong> 블록을 즉시 바닥으로 떨어뜨립니다(Hard Drop).</li>
                 <li><strong>P 키:</strong> 게임을 일시정지하거나 재개합니다.</li>
             </ul>
-
-            <h2>고득점을 위한 핵심 전략</h2>
-            <p>테트리스에서 높은 점수를 얻기 위해서는 단순히 줄을 지우는 것보다 더 치밀한 전략이 필요합니다.</p>
-            <ul>
-                <li><strong>테트리스(4줄 지우기):</strong> 가장 긴 'I'자 블록을 사용하여 한 번에 4줄을 지우는 것을 '테트리스'라고 합니다. 이는 가장 높은 점수 배율을 제공합니다.</li>
-                <li><strong>콤보 유지:</strong> 끊기지 않고 연속해서 줄을 제거하면 콤보 보너스 점수가 누적됩니다.</li>
-                <li><strong>평평한 쌓기:</strong> 가급적 바닥을 평평하게 유지하여 어떤 블록이 나오더라도 대응할 수 있는 공간을 확보하는 것이 생존의 핵심입니다.</li>
-            </ul>
         </article>
     </div>
-
-    <footer class="site-footer">
-        <p>&copy; 2026 수야의 유용한 도구들. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="../privacy.html">개인정보처리방침</a> | 
-            <a href="../terms.html">이용약관</a> | 
-            <a href="../about.html">서비스 소개</a>
-        </div>
-    </footer>
 
     <script>
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
         const nextCanvas = document.getElementById('next');
         const nextContext = nextCanvas.getContext('2d');
-        
+        const pauseDisplay = document.getElementById('pause-status');
+
         context.scale(20, 20);
         nextContext.scale(20, 20);
 
@@ -234,7 +242,7 @@
                     if (value !== 0) {
                         ctx.fillStyle = colors[value];
                         ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
-                        ctx.strokeStyle = '#000';
+                        ctx.strokeStyle = 'white';
                         ctx.lineWidth = 0.05;
                         ctx.strokeRect(x + offset.x, y + offset.y, 1, 1);
                     }
@@ -247,6 +255,12 @@
             context.fillRect(0, 0, canvas.width, canvas.height);
             drawMatrix(arena, {x: 0, y: 0});
             drawMatrix(player.matrix, player.pos);
+        }
+
+        function drawNext() {
+            nextContext.fillStyle = '#1a1a1f';
+            nextContext.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+            drawMatrix(player.next, {x: 1, y: 1}, nextContext);
         }
 
         function merge(arena, player) {
@@ -288,6 +302,7 @@
             }
             if (rowCount > 0) {
                 player.score += rowCount * 10;
+                player.lines += rowCount;
                 updateScore();
             }
         }
@@ -303,15 +318,50 @@
             dropCounter = 0;
         }
 
+        function playerHardDrop() {
+            while (!collide(arena, player)) {
+                player.pos.y++;
+            }
+            player.pos.y--;
+            merge(arena, player);
+            playerReset();
+            arenaSweep();
+            dropCounter = 0;
+        }
+
+        function playerMove(dir) {
+            player.pos.x += dir;
+            if (collide(arena, player)) player.pos.x -= dir;
+        }
+
+        function playerRotate(dir) {
+            const pos = player.pos.x;
+            let offset = 1;
+            rotate(player.matrix, dir);
+            while (collide(arena, player)) {
+                player.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > player.matrix[0].length) {
+                    rotate(player.matrix, -dir);
+                    player.pos.x = pos;
+                    return;
+                }
+            }
+        }
+
         function playerReset() {
             const pieces = 'ILJOTSZ';
-            player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+            if (!player.next) player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
+            player.matrix = player.next;
+            player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
             player.pos.y = 0;
             player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
             if (collide(arena, player)) {
                 isGameOver = true;
                 document.getElementById('game-over-screen').style.display = 'flex';
+                document.getElementById('final-score-display').innerText = 'Score: ' + player.score;
             }
+            drawNext();
         }
 
         let dropCounter = 0;
@@ -332,18 +382,25 @@
 
         function updateScore() {
             document.getElementById('score').innerText = player.score;
+            document.getElementById('lines').innerText = player.lines;
+            dropInterval = Math.max(100, 1000 - (player.lines * 20));
         }
 
         const arena = createMatrix(12, 20);
-        const player = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
+        const player = { pos: {x: 0, y: 0}, matrix: null, next: null, score: 0, lines: 0 };
 
         document.addEventListener('keydown', event => {
-            if (event.keyCode === 37) player.pos.x--;
-            else if (event.keyCode === 39) player.pos.x++;
+            if (event.keyCode === 80) {
+                isPaused = !isPaused;
+                pauseDisplay.style.display = isPaused ? 'block' : 'none';
+                if (!isPaused) { lastTime = performance.now(); update(); }
+            }
+            if (isPaused || isGameOver) return;
+            if (event.keyCode === 37) playerMove(-1);
+            else if (event.keyCode === 39) playerMove(1);
             else if (event.keyCode === 40) playerDrop();
-            else if (event.keyCode === 38) rotate(player.matrix, 1);
-            else if (event.keyCode === 80) isPaused = !isPaused;
-            if (collide(arena, player)) { /* revert movement if collision */ }
+            else if (event.keyCode === 38) playerRotate(1);
+            else if (event.keyCode === 32) playerHardDrop();
         });
 
         document.getElementById('start-btn').addEventListener('click', () => {
@@ -352,322 +409,7 @@
             update();
         });
 
-        document.getElementById('restart-btn').addEventListener('click', () => {
-            location.reload();
-        });
-    </script>
-</body>
-</html>
-
-
-    <script>
-        const canvas = document.getElementById('tetris');
-        const context = canvas.getContext('2d');
-        const nextCanvas = document.getElementById('next');
-        const nextContext = nextCanvas.getContext('2d');
-        const pauseDisplay = document.getElementById('pause-status');
-
-        context.scale(20, 20);
-        nextContext.scale(20, 20);
-
-        // --- 오디오 시스템 (Web Audio API) ---
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playSound(freq, type, duration, vol = 0.1) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const oscillator = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-
-            oscillator.type = type;
-            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            
-            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-
-            oscillator.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + duration);
-        }
-
-        const SFX = {
-            move: () => playSound(150, 'sine', 0.05, 0.05),
-            rotate: () => playSound(300, 'square', 0.1, 0.05),
-            drop: () => playSound(100, 'sine', 0.1, 0.1),
-            clear: () => {
-                playSound(440, 'triangle', 0.2, 0.1);
-                setTimeout(() => playSound(880, 'triangle', 0.3, 0.1), 100);
-            },
-            gameOver: () => {
-                playSound(300, 'sawtooth', 0.3, 0.1);
-                setTimeout(() => playSound(200, 'sawtooth', 0.3, 0.1), 200);
-                setTimeout(() => playSound(100, 'sawtooth', 0.5, 0.1), 400);
-            }
-        };
-
-        const colors = [
-            null,
-            '#FF0D72', '#0DC2FF', '#0DFF72', '#F538FF', '#FF8E0D', '#FFE138', '#3877FF',
-        ];
-
-        function createPiece(type) {
-            if (type === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
-            if (type === 'L') return [[0,2,0],[0,2,0],[0,2,2]];
-            if (type === 'J') return [[0,3,0],[0,3,0],[3,3,0]];
-            if (type === 'O') return [[4,4],[4,4]];
-            if (type === 'Z') return [[5,5,0],[0,5,5],[0,0,0]];
-            if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
-            if (type === 'T') return [[0,7,0],[7,7,7],[0,0,0]];
-        }
-
-        function createMatrix(w, h) {
-            const matrix = [];
-            while (h--) matrix.push(new Array(w).fill(0));
-            return matrix;
-        }
-
-        function drawMatrix(matrix, offset, ctx = context) {
-            matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = colors[value];
-                        ctx.fillStyle = colors[value];
-                        ctx.fillRect(x + offset.x, y + offset.y, 1, 1);
-                        ctx.shadowBlur = 0;
-                        ctx.lineWidth = 0.05;
-                        ctx.strokeStyle = 'rgba(255,255,255,0.5)';
-                        ctx.strokeRect(x + offset.x, y + offset.y, 1, 1);
-                    }
-                });
-            });
-        }
-
-        function drawNext() {
-            nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-            const offset = { x: 1, y: 1 };
-            drawMatrix(player.next, offset, nextContext);
-        }
-
-        function draw() {
-            context.fillStyle = '#000';
-            context.fillRect(0, 0, canvas.width, canvas.height);
-
-            context.strokeStyle = '#111';
-            context.lineWidth = 0.02;
-            for(let i=0; i<12; i++) {
-                context.beginPath(); context.moveTo(i, 0); context.lineTo(i, 20); context.stroke();
-            }
-            for(let i=0; i<20; i++) {
-                context.beginPath(); context.moveTo(0, i); context.lineTo(12, i); context.stroke();
-            }
-
-            drawMatrix(arena, {x: 0, y: 0});
-            drawMatrix(player.matrix, player.pos);
-        }
-
-        function merge(arena, player) {
-            player.matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        arena[y + player.pos.y][x + player.pos.x] = value;
-                    }
-                });
-            });
-        }
-
-        function rotate(matrix, dir) {
-            for (let y = 0; y < matrix.length; ++y) {
-                for (let x = 0; x < y; ++x) {
-                    [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-                }
-            }
-            if (dir > 0) matrix.forEach(row => row.reverse());
-            else matrix.reverse();
-        }
-
-        function collide(arena, player) {
-            const [m, o] = [player.matrix, player.pos];
-            for (let y = 0; y < m.length; ++y) {
-                for (let x = 0; x < m[y].length; ++x) {
-                    if (m[y][x] !== 0 && (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        function arenaSweep() {
-            let clearedCount = 0;
-            outer: for (let y = arena.length - 1; y > 0; --y) {
-                for (let x = 0; x < arena[y].length; ++x) {
-                    if (arena[y][x] === 0) continue outer;
-                }
-                const row = arena.splice(y, 1)[0].fill(0);
-                arena.unshift(row);
-                ++y;
-                clearedCount++;
-            }
-            if (clearedCount > 0) {
-                player.score += clearedCount * 10 * clearedCount;
-                player.lines += clearedCount;
-                SFX.clear();
-                updateScore();
-            }
-        }
-
-        function playerDrop() {
-            player.pos.y++;
-            if (collide(arena, player)) {
-                player.pos.y--;
-                merge(arena, player);
-                SFX.drop();
-                playerReset();
-                arenaSweep();
-            }
-            dropCounter = 0;
-        }
-
-        function playerHardDrop() {
-            while (!collide(arena, player)) {
-                player.pos.y++;
-            }
-            player.pos.y--;
-            merge(arena, player);
-            SFX.drop();
-            playerReset();
-            arenaSweep();
-            dropCounter = 0;
-        }
-
-        function playerMove(dir) {
-            player.pos.x += dir;
-            if (collide(arena, player)) {
-                player.pos.x -= dir;
-            } else {
-                SFX.move();
-            }
-        }
-
-        function playerReset() {
-            const pieces = 'ILJOTSZ';
-            if (player.next === null) {
-                player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
-            }
-            player.matrix = player.next;
-            player.next = createPiece(pieces[pieces.length * Math.random() | 0]);
-            player.pos.y = 0;
-            player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
-            
-            if (collide(arena, player)) {
-                gameOver();
-            }
-            drawNext();
-        }
-
-        function playerRotate(dir) {
-            const pos = player.pos.x;
-            let offset = 1;
-            rotate(player.matrix, dir);
-            while (collide(arena, player)) {
-                player.pos.x += offset;
-                offset = -(offset + (offset > 0 ? 1 : -1));
-                if (offset > player.matrix[0].length) {
-                    rotate(player.matrix, -dir);
-                    player.pos.x = pos;
-                    return;
-                }
-            }
-            SFX.rotate();
-        }
-
-        let dropCounter = 0;
-        let dropInterval = 1000;
-        let lastTime = 0;
-        let isPaused = true;
-        let isGameRunning = false;
-
-        function update(time = 0) {
-            if (isPaused || !isGameRunning) return;
-
-            const deltaTime = time - lastTime;
-            lastTime = time;
-
-            dropCounter += deltaTime;
-            if (dropCounter > dropInterval) {
-                playerDrop();
-            }
-
-            draw();
-            requestAnimationFrame(update);
-        }
-
-        function togglePause() {
-            if (!isGameRunning) return;
-            isPaused = !isPaused;
-            if (!isPaused) {
-                pauseDisplay.style.display = 'none';
-                lastTime = performance.now();
-                update();
-            } else {
-                pauseDisplay.style.display = 'block';
-            }
-        }
-
-        function updateScore() {
-            document.getElementById('score').innerText = player.score;
-            document.getElementById('lines').innerText = player.lines;
-            dropInterval = Math.max(100, 1000 - (player.lines * 20));
-        }
-
-        const arena = createMatrix(12, 20);
-        const player = { pos: {x: 0, y: 0}, matrix: null, next: null, score: 0, lines: 0 };
-
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-over-screen').style.display = 'none';
-            pauseDisplay.style.display = 'none';
-            arena.forEach(row => row.fill(0));
-            player.score = 0;
-            player.lines = 0;
-            player.next = null;
-            playerReset();
-            updateScore();
-            isGameRunning = true;
-            isPaused = false;
-            lastTime = performance.now();
-            update();
-        }
-
-        function gameOver() {
-            isGameRunning = false;
-            isPaused = true;
-            SFX.gameOver();
-            document.getElementById('game-over-screen').style.display = 'flex';
-            document.getElementById('final-score-display').innerText = 'Score: ' + player.score;
-        }
-
-        document.addEventListener('keydown', event => {
-            if (event.keyCode === 80) { // 'P'
-                togglePause();
-                return;
-            }
-
-            if (isPaused || !isGameRunning) return;
-
-            if (event.keyCode === 37) playerMove(-1);
-            else if (event.keyCode === 39) playerMove(1);
-            else if (event.keyCode === 40) playerDrop();
-            else if (event.keyCode === 38) playerRotate(1);
-            else if (event.keyCode === 32) playerHardDrop();
-        });
-
-        document.getElementById('start-btn').addEventListener('click', startGame);
-        document.getElementById('restart-btn').addEventListener('click', startGame);
-
-        draw();
+        document.getElementById('restart-btn').addEventListener('click', () => { location.reload(); });
     </script>
 </body>
 </html>
