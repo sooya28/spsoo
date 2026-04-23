@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>앵그리스쿨 - 수야의 웹툰</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #eee;
+            background-image: linear-gradient(135deg, #0f0f0f 0%, #2c3e50 100%);
+            background-attachment: fixed;
+        }
+        .webtoon-header {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 3px solid #e74c3c;
+            margin-bottom: 3rem;
+        }
+        .webtoon-header h1 {
+            color: #e74c3c;
+            font-size: 3.5rem;
+            text-shadow: 2px 2px 10px rgba(231, 76, 60, 0.5);
+            margin-bottom: 1rem;
+        }
+        .webtoon-header p {
+            color: #ccc;
+            font-size: 1.2rem;
+        }
+        .episode-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+        }
+        .episode-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            gap: 2rem;
+        }
+        .episode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .episode-thumb {
+            width: 120px;
+            height: 120px;
+            background: #333;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .episode-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .episode-info h2 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+            color: #fff;
+        }
+        .episode-info h2::before { display: none; } /* Override default h2 style */
+        .episode-info p {
+            margin: 0;
+            color: #999;
+            font-size: 1rem;
+        }
+        .back-home {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 3rem;
+            padding: 0.8rem 2rem;
+            background: #444;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .back-home:hover {
+            background: #555;
+        }
+        .nav-logo {
+            color: #e74c3c !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">수야의 도구들</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" style="color: #eee;">홈으로</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="webtoon-header">
+        <h1>ANGRY SCHOOL</h1>
+        <p>거친 학교 생활 속에서 벌어지는 분노와 열정의 이야기</p>
+    </header>
+
+    <main class="episode-container">
+        <a href="index.html" class="back-home">← 메인 페이지로 돌아가기</a>
+        
+        <div class="episode-list">
+            <a href="webtoon/angry school/angry school1.png" target="_blank" class="episode-card">
+                <div class="episode-thumb">
+                    <img src="webtoon/angry school/angry school1.png" alt="1화">
+                </div>
+                <div class="episode-info">
+                    <h2>앵그리스쿨 1화</h2>
+                    <p>전설의 시작, 전학생의 등장</p>
+                </div>
+            </a>
+
+            <a href="webtoon/angry school/angry school2.png" target="_blank" class="episode-card">
+                <div class="episode-thumb">
+                    <img src="webtoon/angry school/angry school2.png" alt="2화">
+                </div>
+                <div class="episode-info">
+                    <h2>앵그리스쿨 2화</h2>
+                    <p>폭풍전야, 첫 번째 충돌</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 수야의 웹툰. All rights reserved.</p>
+    </footer>
+</body>
+</html>
