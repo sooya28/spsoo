@@ -41,18 +41,23 @@
             margin-bottom: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-decoration: none;
-            color: inherit;
             display: flex;
             align-items: center;
             padding: 1.5rem;
             gap: 2rem;
         }
         .episode-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.2);
-            border-color: #e74c3c;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.5);
             background: rgba(255, 255, 255, 0.08);
+        }
+        .episode-main-link {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            text-decoration: none;
+            color: inherit;
+            flex-grow: 1;
         }
         .episode-thumb {
             width: 120px;
@@ -65,6 +70,11 @@
             font-size: 3rem;
             flex-shrink: 0;
             overflow: hidden;
+            border: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+        .episode-main-link:hover .episode-thumb {
+            border-color: #e74c3c;
         }
         .episode-thumb img {
             width: 100%;
@@ -75,12 +85,40 @@
             margin: 0 0 0.5rem 0;
             font-size: 1.5rem;
             color: #fff;
+            transition: color 0.3s;
         }
-        .episode-info h2::before { display: none; } /* Override default h2 style */
+        .episode-main-link:hover h2 {
+            color: #e74c3c;
+        }
+        .episode-info h2::before { display: none; }
         .episode-info p {
             margin: 0;
             color: #999;
             font-size: 1rem;
+        }
+        .summary-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            color: #f39c12;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .summary-link:hover {
+            background: #f39c12;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .summary-icon {
+            font-size: 1.2rem;
         }
         .back-home {
             display: inline-block;
@@ -140,49 +178,70 @@
     <main class="episode-container">
         <div class="button-group">
             <a href="index.html" class="back-home">← 메인 페이지로 돌아가기</a>
-            <a href="webtoon_mini.html" class="mini-btn">✨ 요약 4컷 만화 보기</a>
+            <a href="webtoon_mini.html" class="mini-btn">✨ 요약 4컷 만화 전체보기</a>
         </div>
         
         <div class="episode-list">
-            <a href="webtoon/angry school/angry school1.png" target="_blank" class="episode-card">
-                <div class="episode-thumb">
-                    <img src="webtoon/angry school/angry school1.png" alt="1화">
-                </div>
-                <div class="episode-info">
-                    <h2>앵그리스쿨 1화</h2>
-                    <p>전설의 시작, 전학생의 등장</p>
-                </div>
-            </a>
+            <div class="episode-card">
+                <a href="webtoon/angry school/angry school1.png" target="_blank" class="episode-main-link">
+                    <div class="episode-thumb">
+                        <img src="webtoon/angry school/angry school1.png" alt="1화">
+                    </div>
+                    <div class="episode-info">
+                        <h2>앵그리스쿨 1화</h2>
+                        <p>전설의 시작, 전학생의 등장</p>
+                    </div>
+                </a>
+                <a href="webtoon/angry school/Mini_angry1.png" target="_blank" class="summary-link">
+                    <span class="summary-icon">📖</span>
+                    <span>1화 요약</span>
+                </a>
+            </div>
 
-            <a href="webtoon/angry school/angry school2.png" target="_blank" class="episode-card">
-                <div class="episode-thumb">
-                    <img src="webtoon/angry school/angry school2.png" alt="2화">
-                </div>
-                <div class="episode-info">
-                    <h2>앵그리스쿨 2화</h2>
-                    <p>폭풍전야, 첫 번째 충돌</p>
-                </div>
-            </a>
+            <div class="episode-card">
+                <a href="webtoon/angry school/angry school2.png" target="_blank" class="episode-main-link">
+                    <div class="episode-thumb">
+                        <img src="webtoon/angry school/angry school2.png" alt="2화">
+                    </div>
+                    <div class="episode-info">
+                        <h2>앵그리스쿨 2화</h2>
+                        <p>폭풍전야, 첫 번째 충돌</p>
+                    </div>
+                </a>
+                <!-- 2화 요약본 없음 -->
+            </div>
 
-            <a href="webtoon/angry school/angry school3.png" target="_blank" class="episode-card">
-                <div class="episode-thumb">
-                    <img src="webtoon/angry school/angry school3.png" alt="3화">
-                </div>
-                <div class="episode-info">
-                    <h2>앵그리스쿨 3화</h2>
-                    <p>심화되는 갈등, 피할 수 없는 대결</p>
-                </div>
-            </a>
+            <div class="episode-card">
+                <a href="webtoon/angry school/angry school3.png" target="_blank" class="episode-main-link">
+                    <div class="episode-thumb">
+                        <img src="webtoon/angry school/angry school3.png" alt="3화">
+                    </div>
+                    <div class="episode-info">
+                        <h2>앵그리스쿨 3화</h2>
+                        <p>심화되는 갈등, 피할 수 없는 대결</p>
+                    </div>
+                </a>
+                <a href="webtoon/angry school/Mini_angry3.png" target="_blank" class="summary-link">
+                    <span class="summary-icon">📖</span>
+                    <span>3화 요약</span>
+                </a>
+            </div>
 
-            <a href="webtoon/angry school/angry school4.png" target="_blank" class="episode-card">
-                <div class="episode-thumb">
-                    <img src="webtoon/angry school/angry school4.png" alt="4화">
-                </div>
-                <div class="episode-info">
-                    <h2>앵그리스쿨 4화</h2>
-                    <p>격전의 연속, 뜻밖의 전개</p>
-                </div>
-            </a>
+            <div class="episode-card">
+                <a href="webtoon/angry school/angry school4.png" target="_blank" class="episode-main-link">
+                    <div class="episode-thumb">
+                        <img src="webtoon/angry school/angry school4.png" alt="4화">
+                    </div>
+                    <div class="episode-info">
+                        <h2>앵그리스쿨 4화</h2>
+                        <p>격전의 연속, 뜻밖의 전개</p>
+                    </div>
+                </a>
+                <a href="webtoon/angry school/Mini_angry4.png" target="_blank" class="summary-link">
+                    <span class="summary-icon">📖</span>
+                    <span>4화 요약</span>
+                </a>
+            </div>
         </div>
     </main>
 
