@@ -100,25 +100,34 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
-            padding: 0.8rem 1.2rem;
-            background: rgba(243, 156, 18, 0.1);
-            border: 1px solid rgba(243, 156, 18, 0.3);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.1) 0%, rgba(230, 126, 34, 0.1) 100%);
+            border: 2px solid #f39c12;
             color: #f39c12;
             text-decoration: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            transition: all 0.3s;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 800;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             white-space: nowrap;
+            min-width: 100px;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.1);
         }
         .summary-link:hover {
-            background: #f39c12;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
             color: #fff;
-            transform: scale(1.05);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
         }
         .summary-icon {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+        }
+        .summary-container {
+            display: flex;
+            gap: 0.8rem;
+            flex-shrink: 0;
         }
         .back-home {
             display: inline-block;
@@ -237,10 +246,16 @@
                         <p>격전의 연속, 뜻밖의 전개</p>
                     </div>
                 </a>
-                <a href="webtoon/angry school/Mini_angry4.png" target="_blank" class="summary-link">
-                    <span class="summary-icon">📖</span>
-                    <span>4화 요약</span>
-                </a>
+                <div class="summary-container">
+                    <a href="webtoon/angry school/Mini_angry4.png" target="_blank" class="summary-link">
+                        <span class="summary-icon">📖</span>
+                        <span>4화 요약 1</span>
+                    </a>
+                    <a href="webtoon/angry school/Mini_angry4_2.png" target="_blank" class="summary-link">
+                        <span class="summary-icon">📜</span>
+                        <span>4화 요약 2</span>
+                    </a>
+                </div>
             </div>
         </div>
     </main>
