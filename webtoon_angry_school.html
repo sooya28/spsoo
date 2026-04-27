@@ -7,49 +7,95 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body {
-            background: #1a1a1a;
+            background: #111;
             color: #eee;
-            background-image: linear-gradient(135deg, #0f0f0f 0%, #2c3e50 100%);
             background-attachment: fixed;
+            margin: 0;
+            font-family: 'Pretendard', sans-serif;
+            position: relative;
+            overflow-x: hidden;
         }
+        
+        /* 배경 장식 캐릭터 */
+        .char-bg {
+            position: fixed;
+            bottom: -20px;
+            width: 300px;
+            height: auto;
+            z-index: -1;
+            opacity: 0.3;
+            pointer-events: none;
+            filter: grayscale(30%) contrast(120%);
+        }
+        .char-left {
+            left: -50px;
+            transform: rotate(5deg);
+        }
+        .char-right {
+            right: -50px;
+            transform: rotate(-5deg);
+        }
+
         .webtoon-header {
+            position: relative;
             text-align: center;
-            padding: 4rem 1rem;
-            background: rgba(0, 0, 0, 0.4);
-            border-bottom: 3px solid #e74c3c;
+            padding: 6rem 1rem;
             margin-bottom: 3rem;
+            overflow: hidden;
+            border-bottom: 4px solid #e74c3c;
+        }
+        .header-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('webtoon/angry school/angry school1.png');
+            background-size: cover;
+            background-position: center 20%;
+            filter: blur(5px) brightness(0.4);
+            z-index: -1;
+            transform: scale(1.1);
         }
         .webtoon-header h1 {
-            color: #e74c3c;
-            font-size: 3.5rem;
-            text-shadow: 2px 2px 10px rgba(231, 76, 60, 0.5);
-            margin-bottom: 1rem;
+            color: #fff;
+            font-size: 4.5rem;
+            text-shadow: 0 0 20px rgba(231, 76, 60, 0.8), 2px 2px 0 #e74c3c;
+            margin: 0 0 1rem 0;
+            letter-spacing: 5px;
+            font-weight: 900;
         }
         .webtoon-header p {
-            color: #ccc;
-            font-size: 1.2rem;
+            color: #f1c40f;
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
         }
         .episode-container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 0 1.5rem 5rem;
+            position: relative;
         }
         .episode-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
             overflow: hidden;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
             padding: 1.5rem;
             gap: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .episode-card:hover {
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.1);
-            border-color: rgba(231, 76, 60, 0.5);
-            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.2);
+            border-color: rgba(231, 76, 60, 0.6);
+            background: rgba(40, 40, 40, 0.95);
         }
         .episode-main-link {
             display: flex;
@@ -60,21 +106,21 @@
             flex-grow: 1;
         }
         .episode-thumb {
-            width: 120px;
-            height: 120px;
-            background: #333;
-            border-radius: 12px;
+            width: 140px;
+            height: 140px;
+            background: #222;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
             flex-shrink: 0;
             overflow: hidden;
-            border: 2px solid transparent;
-            transition: border-color 0.3s;
+            border: 3px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
         }
         .episode-main-link:hover .episode-thumb {
-            border-color: #f39c12;
+            border-color: #e74c3c;
+            transform: rotate(-3deg);
         }
         .episode-thumb img {
             width: 100%;
@@ -82,19 +128,19 @@
             object-fit: cover;
         }
         .episode-info h2 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.5rem;
+            margin: 0 0 0.8rem 0;
+            font-size: 1.8rem;
             color: #fff;
             transition: color 0.3s;
         }
         .episode-main-link:hover h2 {
-            color: #f39c12;
+            color: #e74c3c;
         }
-        .episode-info h2::before { display: none; }
         .episode-info p {
             margin: 0;
-            color: #999;
-            font-size: 1rem;
+            color: #bbb;
+            font-size: 1.1rem;
+            line-height: 1.5;
         }
         .summary-link {
             display: flex;
@@ -102,105 +148,119 @@
             align-items: center;
             justify-content: center;
             gap: 0.3rem;
-            padding: 0.8rem 1.2rem;
-            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             border: none;
             color: #fff;
             text-decoration: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
+            border-radius: 15px;
+            font-size: 1rem;
             font-weight: 800;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s;
             white-space: nowrap;
-            min-width: 80px;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
         }
         .summary-link:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
         }
         .full-version-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0.6rem 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #888;
+            padding: 0.8rem 1.2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 0.8rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
             font-weight: 600;
             transition: all 0.3s;
             white-space: nowrap;
             margin-left: auto;
         }
         .full-version-btn:hover {
-            background: #e74c3c;
-            color: #fff;
-            border-color: #e74c3c;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
-        }
-        .summary-icon {
-            font-size: 1.2rem;
+            background: #fff;
+            color: #000;
+            border-color: #fff;
         }
         .summary-container {
             display: flex;
-            gap: 0.6rem;
+            gap: 0.8rem;
             flex-shrink: 0;
             align-items: center;
         }
-        .back-home {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background: #444;
-            color: #fff;
+        .back-home, .mini-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
+            font-weight: 800;
             text-decoration: none;
-            border-radius: 12px;
-            font-weight: 700;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+        .back-home {
+            background: #333;
+            color: #fff;
         }
         .back-home:hover {
-            background: #555;
+            background: #444;
+            transform: translateX(-5px);
         }
         .mini-btn {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 12px;
-            font-weight: 700;
-            transition: transform 0.3s;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+            background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+            color: #000;
+            box-shadow: 0 5px 20px rgba(241, 196, 15, 0.3);
         }
         .mini-btn:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(241, 196, 15, 0.5);
         }
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-bottom: 3rem;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
             flex-wrap: wrap;
         }
-        .nav-logo {
-            color: #e74c3c !important;
+        .site-footer {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: #0a0a0a;
+            color: #666;
+            margin-top: 5rem;
+            border-top: 1px solid #222;
+        }
+
+        /* 반응형 수정 */
+        @media (max-width: 768px) {
+            .char-bg { width: 150px; opacity: 0.2; }
+            .webtoon-header h1 { font-size: 2.5rem; }
+            .episode-card { flex-direction: column; text-align: center; gap: 1.5rem; }
+            .episode-main-link { flex-direction: column; }
+            .full-version-btn { margin-left: 0; width: 100%; }
         }
     </style>
 </head>
 <body>
+    <img src="webtoon/character/ttol2.png" class="char-bg char-left" alt="decoration">
+    <img src="webtoon/character/police1.png" class="char-bg char-right" alt="decoration">
+    <img src="webtoon/character/giant1.png" class="char-bg" style="left: 10%; bottom: -50px; width: 250px; opacity: 0.2;" alt="decoration">
+    <img src="webtoon/character/ham3.png" class="char-bg" style="right: 15%; bottom: -40px; width: 200px; opacity: 0.2;" alt="decoration">
+
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo">수야의 도구들</a>
+            <a href="index.html" class="nav-logo" style="color: #e74c3c; font-weight: 900; font-size: 1.5rem; text-decoration: none;">수야의 도구들</a>
             <ul class="nav-menu">
-                <li><a href="index.html" style="color: #eee;">홈으로</a></li>
+                <li><a href="index.html" style="color: #eee; text-decoration: none; font-weight: 600;">홈으로</a></li>
             </ul>
         </div>
     </nav>
 
     <header class="webtoon-header">
+        <div class="header-bg-img"></div>
         <h1>ANGRY SCHOOL</h1>
         <p>거친 학교 생활 속에서 벌어지는 분노와 열정의 이야기</p>
     </header>
