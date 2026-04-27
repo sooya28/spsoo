@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body {
-            background: #111;
-            color: #eee;
+            background: #fdfdfd;
+            color: #333;
+            background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
             background-attachment: fixed;
             margin: 0;
             font-family: 'Pretendard', sans-serif;
@@ -16,33 +17,34 @@
             overflow-x: hidden;
         }
         
-        /* 배경 장식 캐릭터 */
+        /* 배경 장식 캐릭터 - 밝은 배경에 맞춰 조정 */
         .char-bg {
             position: fixed;
             bottom: -20px;
-            width: 300px;
+            width: 320px;
             height: auto;
             z-index: -1;
-            opacity: 0.3;
+            opacity: 0.15;
             pointer-events: none;
-            filter: grayscale(30%) contrast(120%);
+            filter: contrast(110%);
         }
         .char-left {
-            left: -50px;
+            left: -60px;
             transform: rotate(5deg);
         }
         .char-right {
-            right: -50px;
+            right: -60px;
             transform: rotate(-5deg);
         }
 
         .webtoon-header {
             position: relative;
             text-align: center;
-            padding: 6rem 1rem;
-            margin-bottom: 3rem;
+            padding: 7rem 1rem;
+            margin-bottom: 4rem;
             overflow: hidden;
-            border-bottom: 4px solid #e74c3c;
+            border-bottom: 6px solid #e74c3c;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
         .header-bg-img {
             position: absolute;
@@ -53,74 +55,77 @@
             background-image: url('webtoon/angry school/angry school1.png');
             background-size: cover;
             background-position: center 20%;
-            filter: blur(5px) brightness(0.4);
+            filter: blur(3px) brightness(0.8);
             z-index: -1;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
         .webtoon-header h1 {
             color: #fff;
-            font-size: 4.5rem;
-            text-shadow: 0 0 20px rgba(231, 76, 60, 0.8), 2px 2px 0 #e74c3c;
+            font-size: 5rem;
+            text-shadow: 3px 3px 0 #e74c3c, 6px 6px 20px rgba(0,0,0,0.3);
             margin: 0 0 1rem 0;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             font-weight: 900;
         }
         .webtoon-header p {
-            color: #f1c40f;
-            font-size: 1.4rem;
+            color: #fff;
+            background: rgba(231, 76, 60, 0.9);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1.3rem;
             font-weight: 600;
-            text-shadow: 1px 1px 5px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .episode-container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 1.5rem 5rem;
             position: relative;
         }
         .episode-card {
-            background: rgba(30, 30, 30, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: #ffffff;
+            border-radius: 25px;
             overflow: hidden;
-            margin-bottom: 2.5rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 3rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
-            padding: 1.5rem;
-            gap: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 1.8rem;
+            gap: 2.5rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
         }
         .episode-card:hover {
-            transform: scale(1.02) translateY(-5px);
-            box-shadow: 0 20px 40px rgba(231, 76, 60, 0.2);
-            border-color: rgba(231, 76, 60, 0.6);
-            background: rgba(40, 40, 40, 0.95);
+            transform: scale(1.03) translateY(-8px);
+            box-shadow: 0 25px 50px rgba(231, 76, 60, 0.15);
+            border-color: #e74c3c;
         }
         .episode-main-link {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 2.5rem;
             text-decoration: none;
             color: inherit;
             flex-grow: 1;
         }
         .episode-thumb {
-            width: 140px;
-            height: 140px;
-            background: #222;
-            border-radius: 15px;
+            width: 160px;
+            height: 160px;
+            background: #f0f0f0;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             overflow: hidden;
-            border: 3px solid rgba(255,255,255,0.1);
+            border: 4px solid #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             transition: all 0.3s;
         }
         .episode-main-link:hover .episode-thumb {
-            border-color: #e74c3c;
-            transform: rotate(-3deg);
+            transform: rotate(-3deg) scale(1.05);
+            box-shadow: 0 12px 25px rgba(231, 76, 60, 0.2);
         }
         .episode-thumb img {
             width: 100%;
@@ -129,18 +134,19 @@
         }
         .episode-info h2 {
             margin: 0 0 0.8rem 0;
-            font-size: 1.8rem;
-            color: #fff;
+            font-size: 2rem;
+            color: #222;
             transition: color 0.3s;
+            font-weight: 800;
         }
         .episode-main-link:hover h2 {
             color: #e74c3c;
         }
         .episode-info p {
             margin: 0;
-            color: #bbb;
-            font-size: 1.1rem;
-            line-height: 1.5;
+            color: #666;
+            font-size: 1.2rem;
+            line-height: 1.6;
         }
         .summary-link {
             display: flex;
@@ -148,113 +154,124 @@
             align-items: center;
             justify-content: center;
             gap: 0.3rem;
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.8rem;
             background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             border: none;
             color: #fff;
             text-decoration: none;
-            border-radius: 15px;
-            font-size: 1rem;
+            border-radius: 18px;
+            font-size: 1.1rem;
             font-weight: 800;
             transition: all 0.3s;
             white-space: nowrap;
-            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
         }
         .summary-link:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.5);
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.4);
         }
         .full-version-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 0.8rem 1.2rem;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border: 2px solid #eee;
+            color: #555;
             text-decoration: none;
-            border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 700;
             transition: all 0.3s;
             white-space: nowrap;
             margin-left: auto;
         }
         .full-version-btn:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
+            background: #222;
+            color: #fff;
+            border-color: #222;
         }
         .summary-container {
             display: flex;
-            gap: 0.8rem;
+            gap: 1rem;
             flex-shrink: 0;
             align-items: center;
         }
         .back-home, .mini-btn {
             display: inline-flex;
             align-items: center;
-            padding: 1rem 2.5rem;
-            border-radius: 15px;
+            padding: 1.2rem 3rem;
+            border-radius: 20px;
             font-weight: 800;
             text-decoration: none;
             transition: all 0.3s;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .back-home {
-            background: #333;
-            color: #fff;
+            background: #fff;
+            color: #444;
+            border: 1px solid #ddd;
         }
         .back-home:hover {
-            background: #444;
-            transform: translateX(-5px);
+            background: #f8f9fa;
+            transform: translateX(-8px);
+            color: #000;
         }
         .mini-btn {
             background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
-            color: #000;
-            box-shadow: 0 5px 20px rgba(241, 196, 15, 0.3);
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         .mini-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(241, 196, 15, 0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(243, 156, 18, 0.4);
         }
         .button-group {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 4rem;
+            gap: 2rem;
+            margin-bottom: 5rem;
             flex-wrap: wrap;
         }
         .site-footer {
             text-align: center;
-            padding: 4rem 1rem;
-            background: #0a0a0a;
-            color: #666;
+            padding: 5rem 1rem;
+            background: #f8f9fa;
+            color: #888;
             margin-top: 5rem;
-            border-top: 1px solid #222;
+            border-top: 1px solid #eee;
+        }
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            padding: 1rem 0;
         }
 
         /* 반응형 수정 */
         @media (max-width: 768px) {
-            .char-bg { width: 150px; opacity: 0.2; }
-            .webtoon-header h1 { font-size: 2.5rem; }
-            .episode-card { flex-direction: column; text-align: center; gap: 1.5rem; }
-            .episode-main-link { flex-direction: column; }
+            .char-bg { width: 180px; opacity: 0.1; }
+            .webtoon-header h1 { font-size: 3rem; letter-spacing: 4px; }
+            .episode-card { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem 1.5rem; }
+            .episode-main-link { flex-direction: column; gap: 1.5rem; }
             .full-version-btn { margin-left: 0; width: 100%; }
+            .summary-container { width: 100%; flex-direction: column; }
+            .summary-link { width: 100%; }
         }
     </style>
 </head>
 <body>
     <img src="webtoon/character/ttol2.png" class="char-bg char-left" alt="decoration">
     <img src="webtoon/character/police1.png" class="char-bg char-right" alt="decoration">
-    <img src="webtoon/character/giant1.png" class="char-bg" style="left: 10%; bottom: -50px; width: 250px; opacity: 0.2;" alt="decoration">
-    <img src="webtoon/character/ham3.png" class="char-bg" style="right: 15%; bottom: -40px; width: 200px; opacity: 0.2;" alt="decoration">
+    <img src="webtoon/character/giant1.png" class="char-bg" style="left: 10%; bottom: -50px; width: 250px; opacity: 0.1;" alt="decoration">
+    <img src="webtoon/character/ham3.png" class="char-bg" style="right: 15%; bottom: -40px; width: 200px; opacity: 0.1;" alt="decoration">
 
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="nav-logo" style="color: #e74c3c; font-weight: 900; font-size: 1.5rem; text-decoration: none;">수야의 도구들</a>
+            <a href="index.html" class="nav-logo" style="color: #e74c3c; font-weight: 900; font-size: 1.7rem; text-decoration: none;">수야의 도구들</a>
             <ul class="nav-menu">
-                <li><a href="index.html" style="color: #eee; text-decoration: none; font-weight: 600;">홈으로</a></li>
+                <li><a href="index.html" style="color: #444; text-decoration: none; font-weight: 700;">홈으로</a></li>
             </ul>
         </div>
     </nav>
